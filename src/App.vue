@@ -1,7 +1,16 @@
 <script setup>
-// import { RouterLink, RouterView } from "vue-router";
+import { RouterView } from "vue-router";
+
+import MainHeader from "@/components/MainHeader.vue";
+import MainFooter from "@/components/MainFooter.vue";
 </script>
 
-<template>hello</template>
+<template>
+  <MainHeader />
+  <RouterView />
+  <MainFooter />
+</template>
 
-<style></style>
+<style>
+@import url(@/assets/styles/style.css);
+</style>
