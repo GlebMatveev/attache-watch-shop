@@ -17,7 +17,7 @@
     <div class="container">
       <div class="service__block">
         <RouterLink
-          to="/collection"
+          to="/catalog"
           class="service__mail"
           href="mailto:service@attache.com"
           style="margin-bottom: 200px"

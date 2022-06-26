@@ -1,12 +1,27 @@
 <script>
 // import { HTTP } from "../main";
+import { useSettingsStore } from "@/stores/settings";
 
 export default {
+  setup() {
+    const settingsStore = useSettingsStore();
+    return { settingsStore };
+  },
   data() {
     return {
+      langData: {},
+      langDataLoaded: false,
+
       products: "",
+      productsLoaded: false,
+
+      productsBySubcategoryLoaded: false,
+
       models: [],
+      modelsLoaded: false,
+
       productsByModels: [],
+      productsByModelsLoaded: false,
 
       modelWords: ["модель", "модели", "моделей"],
     };
@@ -17,42 +32,123 @@ export default {
       return this.$route.params.subcategory;
     },
   },
+  watch: {
+    "settingsStore.langSelected": function () {
+      this.initialize();
+    },
+    $route() {
+      this.initialize();
+    },
+
+    langDataLoaded() {
+      if (
+        this.langDataLoaded == true &&
+        this.productsLoaded == true &&
+        this.productsBySubcategoryLoaded == true &&
+        this.modelsLoaded == true &&
+        this.productsByModelsLoaded == true
+      ) {
+        this.settingsStore.allLoaded = false;
+      }
+    },
+    productsLoaded() {
+      if (
+        this.langDataLoaded == true &&
+        this.productsLoaded == true &&
+        this.productsBySubcategoryLoaded == true &&
+        this.modelsLoaded == true &&
+        this.productsByModelsLoaded == true
+      ) {
+        this.settingsStore.allLoaded = false;
+      }
+    },
+    productsBySubcategoryLoaded() {
+      if (
+        this.langDataLoaded == true &&
+        this.productsLoaded == true &&
+        this.productsBySubcategoryLoaded == true &&
+        this.modelsLoaded == true &&
+        this.productsByModelsLoaded == true
+      ) {
+        this.settingsStore.allLoaded = false;
+      }
+    },
+    modelsLoaded() {
+      if (
+        this.langDataLoaded == true &&
+        this.productsLoaded == true &&
+        this.productsBySubcategoryLoaded == true &&
+        this.modelsLoaded == true &&
+        this.productsByModelsLoaded == true
+      ) {
+        this.settingsStore.allLoaded = false;
+      }
+    },
+    productsByModelsLoaded() {
+      if (
+        this.langDataLoaded == true &&
+        this.productsLoaded == true &&
+        this.productsBySubcategoryLoaded == true &&
+        this.modelsLoaded == true &&
+        this.productsByModelsLoaded == true
+      ) {
+        this.settingsStore.allLoaded = false;
+      }
+    },
+  },
   beforeMount() {
     this.initialize();
   },
   methods: {
     initialize() {
+      this.settingsStore.allLoaded = true;
+
+      this.langData = {};
+      this.langDataLoaded = false;
+      this.products = "";
+      this.productsLoaded = false;
+      this.productsBySubcategoryLoaded = false;
+      this.models = [];
+      this.modelsLoaded = false;
+      this.productsByModels = [];
+      this.productsByModelsLoaded = false;
+
       this.getProducts();
+
+      this.getLangData(this.settingsStore.langSelected, "collection");
     },
 
-    getSubcategories() {
+    getLangData(currentLanguage, currentComponent) {
       this.axios
-        .get("../db.json")
+        // get file path from Pinia
+        .get(this.settingsStore.langFile[currentLanguage])
         .then((response) => {
-          this.subcategories = response.data.subcategories;
+          for (let key1 in response.data[currentComponent]) {
+            Object.keys(response.data[currentComponent][key1]).forEach(
+              (key2) => {
+                Object.keys(response.data[currentComponent][key1]).forEach(
+                  (key3) => {
+                    this.langData[key2] =
+                      response.data[currentComponent][key1][key3];
+                  }
+                );
+              }
+            );
+          }
 
-          this.filterSubcategoriesByCategoryName("Часы");
+          this.langDataLoaded = true;
         })
         .catch((error) => {
           console.log(error);
         });
     },
 
-    filterSubcategoriesByCategoryName(categoryName) {
-      this.subcategories = this.subcategories.filter((item) => {
-        if (item.category == categoryName) {
-          return true;
-        } else {
-          return false;
-        }
-      });
-    },
-
     getProducts() {
       this.axios
-        .get("../db.json")
+        .get(this.settingsStore.api + "/products")
         .then((response) => {
-          this.products = response.data.products;
+          this.products = response.data;
+          this.productsLoaded = true;
 
           this.filterProductsBySubcategory(this.$route.params.subcategory);
 
@@ -67,20 +163,32 @@ export default {
 
     filterProductsBySubcategory(categoryName) {
       this.products = this.products.filter((item) => {
-        if (item.subcategory == categoryName) {
+        if (
+          item["subcategory_" + this.settingsStore.langSelected] == categoryName
+        ) {
           return true;
         } else {
           return false;
         }
       });
+
+      this.productsBySubcategoryLoaded = true;
     },
 
     getModelsBySubcategory() {
       for (let key in this.products) {
-        if (!this.models.includes(this.products[key].model)) {
-          this.models.push(this.products[key].model);
+        if (
+          !this.models.includes(
+            this.products[key]["title_" + this.settingsStore.langSelected]
+          )
+        ) {
+          this.models.push(
+            this.products[key]["title_" + this.settingsStore.langSelected]
+          );
         }
       }
+
+      this.modelsLoaded = true;
     },
 
     filterProductsByModels() {
@@ -90,7 +198,7 @@ export default {
 
       for (let key in this.models) {
         tempFilteredProducts = tempProducts.filter((item) => {
-          if (item.model == this.models[key]) {
+          if (item.title_rus == this.models[key]) {
             return true;
           } else {
             return false;
@@ -100,6 +208,8 @@ export default {
 
         tempFilteredProducts = "";
       }
+
+      this.productsByModelsLoaded = true;
     },
 
     // word declension function
@@ -112,16 +222,16 @@ export default {
           : 2
       ];
     },
+
+    // Цены по разрядам
+    numberWithSpaces(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    },
   },
 };
 </script>
 
 <template>
-  <!-- <div>
-    <b>products: </b><br />
-    {{ products }}
-  </div> -->
-  s
   <section class="collection-top">
     <img
       class="collection-top__img"
@@ -137,18 +247,6 @@ export default {
       <hr class="collection-top__border" />
     </div>
   </section>
-  <!-- <div>
-    <b>products: </b><br />
-    {{ products }}
-  </div>
-  <div>
-    <b>models: </b><br />
-    {{ models }}
-  </div>
-  <div>
-    <b>productsByModels: </b><br />
-    {{ productsByModels }}
-  </div> -->
 
   <section
     v-for="(x0, index0) in productsByModels"
@@ -164,7 +262,14 @@ export default {
         <div class="collection-block__right">
           <span class="collection-block__text">
             {{ productsByModels[index0].length }}
-            {{ declOfWord(productsByModels[index0].length, modelWords) }}</span
+            {{
+              declOfWord(
+                productsByModelsLoaded == true
+                  ? productsByModels[index0].length
+                  : "",
+                langDataLoaded == true ? langData.page.declension : ""
+              )
+            }}</span
           >
           <div class="collection-block__redline"></div>
         </div>
@@ -179,7 +284,10 @@ export default {
           :to="{
             name: 'detail',
             params: {
-              id: productsByModels[index0][index1].id,
+              id:
+                productsByModelsLoaded == true
+                  ? productsByModels[index0][index1].id
+                  : '',
             },
           }"
           class="clock__link clock__link-bordered"
@@ -187,331 +295,55 @@ export default {
           <div class="clock">
             <img
               class="clock__img"
-              :src="`../` + productsByModels[index0][index1].photoMain"
+              :src="
+                productsByModelsLoaded == true
+                  ? productsByModels[index0][index1].photo_main
+                  : ''
+              "
               alt="Watch"
             />
             <h2 class="clock__head">
-              {{ productsByModels[index0][index1].subcategory }}
+              {{
+                productsByModelsLoaded == true
+                  ? productsByModels[index0][index1][
+                      "subcategory_" + settingsStore.langSelected
+                    ]
+                  : ""
+              }}
             </h2>
             <span class="clock__name">{{
-              productsByModels[index0][index1].model
+              productsByModelsLoaded == true
+                ? productsByModels[index0][index1][
+                    "title_" + settingsStore.langSelected
+                  ]
+                : ""
             }}</span>
             <hr class="clock__deco" />
             <span class="clock__art">{{
-              productsByModels[index0][index1].articul
+              productsByModelsLoaded == true
+                ? productsByModels[index0][index1].articul
+                : ""
             }}</span>
             <div class="clock__price">
               <span class="clock__amount">{{
-                productsByModels[index0][index1].price
+                numberWithSpaces(+productsByModels[index0][index1].price)
               }}</span>
               <span class="clock__currency">₽</span>
             </div>
             <hr class="clock__redline" />
           </div>
         </RouterLink>
-        <!-- <RouterLink to="/detail/2" class="clock__link clock__link-bordered">
-          <div class="clock">
-            <img
-              class="clock__img"
-              src="../assets/img/clock/watch-2.png"
-              alt="Watch"
-            />
-            <h2 class="clock__head">Pilot</h2>
-            <span class="clock__name">AUTOMATIC</span>
-            <hr class="clock__deco" />
-            <span class="clock__art">AРТ 2420.350.1</span>
-            <div class="clock__price">
-              <span class="clock__amount">25 000</span>
-              <span class="clock__currency">₽</span>
-            </div>
-            <hr class="clock__redline" />
-          </div>
-        </RouterLink>
-        <RouterLink to="/detail/3" class="clock__link clock__link-bordered">
-          <div class="clock">
-            <img
-              class="clock__img"
-              src="../assets/img/clock/watch-3.png"
-              alt="Watch"
-            />
-            <h2 class="clock__head">Pilot</h2>
-            <span class="clock__name">24 Hour</span>
-            <hr class="clock__deco" />
-            <span class="clock__art">AРТ 2420.350.1</span>
-            <div class="clock__price">
-              <span class="clock__amount">20 000</span>
-              <span class="clock__currency">₽</span>
-            </div>
-            <hr class="clock__redline" />
-          </div>
-        </RouterLink>
-        <RouterLink to="/detail/4" class="clock__link clock__link-bordered">
-          <div class="clock">
-            <img
-              class="clock__img"
-              src="../assets/img/clock/watch-4.png"
-              alt="Watch"
-            />
-            <h2 class="clock__head">Pilot</h2>
-            <span class="clock__name">AUTOMATIC</span>
-            <hr class="clock__deco" />
-            <span class="clock__art">AРТ 2420.350.1</span>
-            <div class="clock__price">
-              <span class="clock__amount">25 000</span>
-              <span class="clock__currency">₽</span>
-            </div>
-            <hr class="clock__redline" />
-          </div>
-        </RouterLink> -->
       </div>
     </div>
     <hr class="collection-block__border" />
   </section>
-
-  <!-- <section class="collection-block">
-    <div class="container">
-      <div class="collection-block__wrap">
-        <div class="collection-block__left">
-          <h2 class="collection-block__heading">AUTOMATIC 45mm</h2>
-          <div class="collection-block__redline"></div>
-        </div>
-        <div class="collection-block__right">
-          <span class="collection-block__text">7 модели</span>
-          <div class="collection-block__redline"></div>
-        </div>
-      </div>
-    </div>
-    <hr class="collection-block__border" />
-    <div class="container">
-      <div class="collection-block__grid">
-        <RouterLink to="/detail/1" class="clock__link clock__link-bordered">
-          <div class="clock">
-            <img
-              class="clock__img"
-              src="../assets/img/clock/watch-1.png"
-              alt="Watch"
-            />
-            <h2 class="clock__head">Pilot</h2>
-            <span class="clock__name">chronograph</span>
-            <hr class="clock__deco" />
-            <span class="clock__art">AРТ 2420.350.1</span>
-            <div class="clock__price">
-              <span class="clock__amount">30 000</span>
-              <span class="clock__currency">₽</span>
-            </div>
-            <hr class="clock__redline" />
-          </div>
-        </RouterLink>
-        <RouterLink to="/detail/2" class="clock__link clock__link-bordered">
-          <div class="clock">
-            <img
-              class="clock__img"
-              src="../assets/img/clock/watch-2.png"
-              alt="Watch"
-            />
-            <h2 class="clock__head">Pilot</h2>
-            <span class="clock__name">AUTOMATIC</span>
-            <hr class="clock__deco" />
-            <span class="clock__art">AРТ 2420.350.1</span>
-            <div class="clock__price">
-              <span class="clock__amount">25 000</span>
-              <span class="clock__currency">₽</span>
-            </div>
-            <hr class="clock__redline" />
-          </div>
-        </RouterLink>
-        <RouterLink to="/detail/3" class="clock__link clock__link-bordered">
-          <div class="clock">
-            <img
-              class="clock__img"
-              src="../assets/img/clock/watch-3.png"
-              alt="Watch"
-            />
-            <h2 class="clock__head">Pilot</h2>
-            <span class="clock__name">24 Hour</span>
-            <hr class="clock__deco" />
-            <span class="clock__art">AРТ 2420.350.1</span>
-            <div class="clock__price">
-              <span class="clock__amount">20 000</span>
-              <span class="clock__currency">₽</span>
-            </div>
-            <hr class="clock__redline" />
-          </div>
-        </RouterLink>
-        <RouterLink to="/detail/4" class="clock__link clock__link-bordered">
-          <div class="clock">
-            <img
-              class="clock__img"
-              src="../assets/img/clock/watch-4.png"
-              alt="Watch"
-            />
-            <h2 class="clock__head">Pilot</h2>
-            <span class="clock__name">AUTOMATIC</span>
-            <hr class="clock__deco" />
-            <span class="clock__art">AРТ 2420.350.1</span>
-            <div class="clock__price">
-              <span class="clock__amount">25 000</span>
-              <span class="clock__currency">₽</span>
-            </div>
-            <hr class="clock__redline" />
-          </div>
-        </RouterLink>
-        <RouterLink to="/detail/16" class="clock__link clock__link-bordered">
-          <div class="clock">
-            <img
-              class="clock__img"
-              src="../assets/img/clock/watch-2.png"
-              alt="Watch"
-            />
-            <h2 class="clock__head">Pilot</h2>
-            <span class="clock__name">AUTOMATIC</span>
-            <hr class="clock__deco" />
-            <span class="clock__art">AРТ 2420.350.1</span>
-            <div class="clock__price">
-              <span class="clock__amount">25 000</span>
-              <span class="clock__currency">₽</span>
-            </div>
-            <hr class="clock__redline" />
-          </div>
-        </RouterLink>
-        <RouterLink to="/detail/17" class="clock__link clock__link-bordered">
-          <div class="clock">
-            <img
-              class="clock__img"
-              src="../assets/img/clock/watch-3.png"
-              alt="Watch"
-            />
-            <h2 class="clock__head">Pilot</h2>
-            <span class="clock__name">24 Hour</span>
-            <hr class="clock__deco" />
-            <span class="clock__art">AРТ 2420.350.1</span>
-            <div class="clock__price">
-              <span class="clock__amount">20 000</span>
-              <span class="clock__currency">₽</span>
-            </div>
-            <hr class="clock__redline" />
-          </div>
-        </RouterLink>
-        <RouterLink to="/detail/18" class="clock__link clock__link-bordered">
-          <div class="clock">
-            <img
-              class="clock__img"
-              src="../assets/img/clock/watch-4.png"
-              alt="Watch"
-            />
-            <h2 class="clock__head">Pilot</h2>
-            <span class="clock__name">AUTOMATIC</span>
-            <hr class="clock__deco" />
-            <span class="clock__art">AРТ 2420.350.1</span>
-            <div class="clock__price">
-              <span class="clock__amount">25 000</span>
-              <span class="clock__currency">₽</span>
-            </div>
-            <hr class="clock__redline" />
-          </div>
-        </RouterLink>
-      </div>
-    </div>
-    <hr class="collection-block__border" />
-  </section>
-
-  <section class="collection-block">
-    <div class="container">
-      <div class="collection-block__wrap">
-        <div class="collection-block__left">
-          <h2 class="collection-block__heading">24 GMT 45mm</h2>
-          <div class="collection-block__redline"></div>
-        </div>
-        <div class="collection-block__right">
-          <span class="collection-block__text">4 модели</span>
-          <div class="collection-block__redline"></div>
-        </div>
-      </div>
-    </div>
-    <hr class="collection-block__border" />
-    <div class="container">
-      <div class="collection-block__grid">
-        <RouterLink to="/detail/1" class="clock__link clock__link-bordered">
-          <div class="clock">
-            <img
-              class="clock__img"
-              src="../assets/img/clock/watch-1.png"
-              alt="Watch"
-            />
-            <h2 class="clock__head">Pilot</h2>
-            <span class="clock__name">chronograph</span>
-            <hr class="clock__deco" />
-            <span class="clock__art">AРТ 2420.350.1</span>
-            <div class="clock__price">
-              <span class="clock__amount">30 000</span>
-              <span class="clock__currency">₽</span>
-            </div>
-            <hr class="clock__redline" />
-          </div>
-        </RouterLink>
-        <RouterLink to="/detail/2" class="clock__link clock__link-bordered">
-          <div class="clock">
-            <img
-              class="clock__img"
-              src="../assets/img/clock/watch-2.png"
-              alt="Watch"
-            />
-            <h2 class="clock__head">Pilot</h2>
-            <span class="clock__name">AUTOMATIC</span>
-            <hr class="clock__deco" />
-            <span class="clock__art">AРТ 2420.350.1</span>
-            <div class="clock__price">
-              <span class="clock__amount">25 000</span>
-              <span class="clock__currency">₽</span>
-            </div>
-            <hr class="clock__redline" />
-          </div>
-        </RouterLink>
-        <RouterLink to="/detail/3" class="clock__link clock__link-bordered">
-          <div class="clock">
-            <img
-              class="clock__img"
-              src="../assets/img/clock/watch-3.png"
-              alt="Watch"
-            />
-            <h2 class="clock__head">Pilot</h2>
-            <span class="clock__name">24 Hour</span>
-            <hr class="clock__deco" />
-            <span class="clock__art">AРТ 2420.350.1</span>
-            <div class="clock__price">
-              <span class="clock__amount">20 000</span>
-              <span class="clock__currency">₽</span>
-            </div>
-            <hr class="clock__redline" />
-          </div>
-        </RouterLink>
-        <RouterLink to="/detail/4" class="clock__link clock__link-bordered">
-          <div class="clock">
-            <img
-              class="clock__img"
-              src="../assets/img/clock/watch-4.png"
-              alt="Watch"
-            />
-            <h2 class="clock__head">Pilot</h2>
-            <span class="clock__name">AUTOMATIC</span>
-            <hr class="clock__deco" />
-            <span class="clock__art">AРТ 2420.350.1</span>
-            <div class="clock__price">
-              <span class="clock__amount">25 000</span>
-              <span class="clock__currency">₽</span>
-            </div>
-            <hr class="clock__redline" />
-          </div>
-        </RouterLink>
-      </div>
-    </div>
-    <hr class="collection-block__border" />
-  </section> -->
 
   <div class="container">
     <div class="collection-block__button-wrapper">
       <RouterLink to="/catalog">
-        <button class="collection-block__button">Посмотреть все часы</button>
+        <button class="collection-block__button">
+          {{ langDataLoaded == true ? langData.page.button : "" }}
+        </button>
       </RouterLink>
 
       <!-- <div class="collection-block__bottom"></div> -->

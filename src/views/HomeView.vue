@@ -1,33 +1,37 @@
 <script>
 import "vue3-carousel/dist/carousel.css";
 import { Carousel, Slide, Pagination } from "vue3-carousel";
+
 import rellax from "rellax";
 import { useSettingsStore } from "@/stores/settings";
-import { HTTP } from "../main";
+import SliderNews from "@/components/SliderNews.vue";
 
 export default {
   components: {
     Carousel,
     Slide,
     Pagination,
+    SliderNews,
   },
   setup() {
     const settingsStore = useSettingsStore();
-    return { settingsStore };
+    return { settingsStore, modules: [Pagination] };
   },
   data() {
     return {
-      // banners: {
-      //   // banner1: "top__slide-1",
-      //   // banner2: "top__slide-2",
-      //   // banner3: "top__slide-3",
-      //   bannerClasses: ["top__slide-1", "top__slide-2", "top__slide-3"],
-      //   bannerTitles: ["PILOT", "PILOT", "DEEP SEA"],
-      //   bannerSubtitles: ["Automatic", "Chronograph", "Automatic"],
-      // },
+      langData: {},
+      langDataLoaded: false,
+
+      products: "",
+      productsLoaded: false,
 
       subcategories: "",
-      products: "",
+      subcategoriesLoaded: false,
+
+      productsBySubcategories: [],
+      productsBySubcategoriesLoaded: false,
+
+      productsByCountLoaded: false,
 
       banners: [
         {
@@ -52,10 +56,72 @@ export default {
           logo: "../assets/img/banners/deep-sea-logo.png",
         },
       ],
+
       rellax: {
         speed: 7,
       },
     };
+  },
+  watch: {
+    "settingsStore.langSelected": function () {
+      this.initialize();
+    },
+
+    langDataLoaded() {
+      if (
+        this.langDataLoaded == true &&
+        this.productsLoaded == true &&
+        this.subcategoriesLoaded == true &&
+        this.productsBySubcategoriesLoaded == true &&
+        this.productsByCountLoaded == true
+      ) {
+        this.settingsStore.allLoaded = false;
+      }
+    },
+    productsLoaded() {
+      if (
+        this.langDataLoaded == true &&
+        this.productsLoaded == true &&
+        this.subcategoriesLoaded == true &&
+        this.productsBySubcategoriesLoaded == true &&
+        this.productsByCountLoaded == true
+      ) {
+        this.settingsStore.allLoaded = false;
+      }
+    },
+    subcategoriesLoaded() {
+      if (
+        this.langDataLoaded == true &&
+        this.productsLoaded == true &&
+        this.subcategoriesLoaded == true &&
+        this.productsBySubcategoriesLoaded == true &&
+        this.productsByCountLoaded == true
+      ) {
+        this.settingsStore.allLoaded = false;
+      }
+    },
+    productsBySubcategoriesLoaded() {
+      if (
+        this.langDataLoaded == true &&
+        this.productsLoaded == true &&
+        this.subcategoriesLoaded == true &&
+        this.productsBySubcategoriesLoaded == true &&
+        this.productsByCountLoaded == true
+      ) {
+        this.settingsStore.allLoaded = false;
+      }
+    },
+    productsByCountLoaded() {
+      if (
+        this.langDataLoaded == true &&
+        this.productsLoaded == true &&
+        this.subcategoriesLoaded == true &&
+        this.productsBySubcategoriesLoaded == true &&
+        this.productsByCountLoaded == true
+      ) {
+        this.settingsStore.allLoaded = false;
+      }
+    },
   },
   mounted() {
     this.initialize();
@@ -64,45 +130,105 @@ export default {
   },
   methods: {
     initialize() {
+      this.settingsStore.allLoaded = true;
+
+      this.langData = {};
+      this.langDataLoaded = false;
+      this.products = "";
+      this.productsLoaded = false;
+      this.subcategories = "";
+      this.subcategoriesLoaded = false;
+      this.productsBySubcategories = [];
+      this.productsBySubcategoriesLoaded = false;
+      this.productsByCountLoaded = false;
+
       this.getSubcategories();
 
-      this.getProducts();
+      this.getLangData(this.settingsStore.langSelected, "home");
     },
 
-    getSubcategories() {
-      HTTP.get()
+    getLangData(currentLanguage, currentComponent) {
+      this.axios
+        // get file path from Pinia
+        .get(this.settingsStore.langFile[currentLanguage])
         .then((response) => {
-          this.subcategories = response.data.subcategories;
+          for (let key1 in response.data[currentComponent]) {
+            Object.keys(response.data[currentComponent][key1]).forEach(
+              (key2) => {
+                Object.keys(response.data[currentComponent][key1]).forEach(
+                  (key3) => {
+                    this.langData[key2] =
+                      response.data[currentComponent][key1][key3];
+                  }
+                );
+              }
+            );
+          }
 
-          this.filterSubcategoriesByCategoryName("Часы");
+          this.langDataLoaded = true;
         })
         .catch((error) => {
           console.log(error);
         });
     },
 
-    filterSubcategoriesByCategoryName(categoryName) {
-      this.subcategories = this.subcategories.filter((item) => {
-        if (item.category == categoryName) {
-          return true;
-        } else {
-          return false;
-        }
-      });
+    getSubcategories() {
+      this.axios
+        .get(this.settingsStore.api + "/subcategories-by-category/" + "1") // часы
+        .then((response) => {
+          this.subcategories = response.data;
+          this.subcategoriesLoaded = true;
+
+          this.getProducts();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
 
     getProducts() {
-      HTTP.get()
+      this.axios
+        .get(this.settingsStore.api + "/products")
         .then((response) => {
-          this.products = response.data.products;
+          this.products = response.data;
+          this.productsLoaded = true;
 
-          this.filterProductsByOneInSubcategory();
+          this.filterProductsBySubcategories();
+
+          // this.filterProductsByOneInSubcategory();
 
           this.filterProductsByCount();
         })
         .catch((error) => {
           console.log(error);
         });
+    },
+
+    filterProductsBySubcategories() {
+      let tempProducts = this.products;
+
+      let tempFilteredProducts = "";
+
+      for (let key in this.subcategories) {
+        tempFilteredProducts = tempProducts.filter((item) => {
+          if (
+            item["subcategory_" + this.settingsStore.langSelected] ==
+            this.subcategories[key]["title_" + this.settingsStore.langSelected]
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+
+        this.productsBySubcategories[
+          this.subcategories[key]["subcategory_id"]
+        ] = tempFilteredProducts;
+
+        tempFilteredProducts = "";
+      }
+
+      this.productsBySubcategoriesLoaded = true;
     },
 
     filterProductsByCount() {
@@ -115,18 +241,24 @@ export default {
           return false;
         }
       });
+
+      this.productsByCountLoaded = true;
     },
 
     filterProductsByOneInSubcategory() {
       let tempArr = [];
       this.products = this.products.filter((item) => {
-        if (!tempArr.includes(item.subcategory)) {
-          tempArr.push(item.subcategory);
+        if (!tempArr.includes(item.subcategory_rus)) {
+          tempArr.push(item.subcategory_rus);
           return true;
         } else {
           return false;
         }
       });
+    },
+
+    numberWithSpaces(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
     },
   },
 };
@@ -134,8 +266,9 @@ export default {
 
 <template>
   <!-- Основной баннер -->
-  <carousel :wrap-around="true" :autoplay="5000" :items-to-show="1">
-    <slide v-for="slide in banners" :key="slide">
+  <!-- <SliderTop></SliderTop> -->
+  <Carousel :wrap-around="true" :autoplay="5000" :items-to-show="1">
+    <Slide v-for="slide in banners" :key="slide">
       <section class="top">
         <div :class="slide.class">
           <div class="container top__flex">
@@ -144,50 +277,56 @@ export default {
               <hr class="top__hr" />
               <h1 class="top__heading">{{ slide.title }}</h1>
               <span class="top__text">{{ slide.subtitle }}</span>
-              <RouterLink :to="slide.link">
-                <button class="top__button">Посмотреть эти часы</button>
+              <RouterLink class="top__link" :to="slide.link">
+                <button class="top__button">
+                  {{ langDataLoaded == true ? langData.banner.button : "" }}
+                </button>
               </RouterLink>
               <pagination />
             </div>
           </div>
         </div>
       </section>
-    </slide>
-  </carousel>
+    </Slide>
+  </Carousel>
 
   <!-- Витрина -->
-  <section class="showcase showcase__colored">
+  <section class="showcase showcase__colored showcase__margin">
     <div class="container">
       <div class="showcase__block showcase__block-lifted">
         <div class="showcase__head">
-          <h2 class="showcase__heading">Часы</h2>
+          <h2 class="showcase__heading">
+            {{ langDataLoaded == true ? langData.showcase.title : "" }}
+          </h2>
           <hr class="showcase__decor" />
         </div>
         <div class="showcase__slider">
           <div class="showcase__slide">
             <RouterLink
-              v-for="(x, index) in products"
-              :key="`${index}-${x}`"
+              v-for="(product, index) in products"
+              :key="`${index}-${product}`"
               :to="{
                 name: 'detail',
                 params: {
-                  id: products[index].id,
+                  id: product.id,
                 },
               }"
               class="clock__link"
             >
               <div class="clock">
-                <img
-                  class="clock__img"
-                  :src="products[index].photoMain"
-                  alt="Watch"
-                />
-                <h2 class="clock__head">{{ products[index].subcategory }}</h2>
-                <span class="clock__name">{{ products[index].model }}</span>
+                <img class="clock__img" :src="product.photo_main" alt="Watch" />
+                <h2 class="clock__head">
+                  {{ product["subcategory_" + settingsStore.langSelected] }}
+                </h2>
+                <span class="clock__name">{{
+                  product["title_" + settingsStore.langSelected]
+                }}</span>
                 <hr class="clock__deco" />
-                <span class="clock__art">{{ products[index].articul }}</span>
+                <span class="clock__art">{{ product.articul }}</span>
                 <div class="clock__price">
-                  <span class="clock__amount">{{ products[index].price }}</span>
+                  <span class="clock__amount">{{
+                    numberWithSpaces(+product.price)
+                  }}</span>
                   <span class="clock__currency">₽</span>
                 </div>
                 <hr class="clock__redline" />
@@ -252,10 +391,13 @@ export default {
             </RouterLink> -->
           </div>
         </div>
+
         <div class="showcase__button-wrapper">
-          <RouterLink to="/catalog">
-            <button class="showcase__button">Посмотреть все часы</button>
-          </RouterLink>
+          <!-- <RouterLink to="/catalog"> -->
+          <RouterLink to="/catalog" class="showcase__button">{{
+            langDataLoaded == true ? langData.showcase.button : ""
+          }}</RouterLink>
+          <!-- </RouterLink> -->
         </div>
       </div>
     </div>
@@ -268,10 +410,14 @@ export default {
 
     <div class="new-collection__watch">
       <div class="new-collection__block">
-        <h1>Deep Sea</h1>
-        <span>COLLECTION</span>
-        <RouterLink to="/under-construction"
-          ><button class="new-collection__button">ПОСМОТРЕТЬ ПРЕМЬЕРУ</button>
+        <h1>{{ langDataLoaded == true ? langData.parallax.title : "" }}</h1>
+        <span>{{
+          langDataLoaded == true ? langData.parallax.subtitle : ""
+        }}</span>
+        <RouterLink to="/catalog/DEEP%20SEA"
+          ><button class="new-collection__button">
+            {{ langDataLoaded == true ? langData.parallax.button : "" }}
+          </button>
         </RouterLink>
       </div>
     </div>
@@ -289,10 +435,16 @@ export default {
           />
           <div class="options__label">
             <div class="options__text-block">
-              <h2 class="options__heading">Купить Часы</h2>
-              <p class="options__text">Сейчас на сайте</p>
+              <h2 class="options__heading">
+                {{ langDataLoaded == true ? langData.options.title1 : "" }}
+              </h2>
+              <p class="options__text">
+                {{ langDataLoaded == true ? langData.options.subtitle1 : "" }}
+              </p>
               <RouterLink to="/catalog">
-                <button class="options__button">Посетить магазин</button>
+                <button class="options__button">
+                  {{ langDataLoaded == true ? langData.options.button1 : "" }}
+                </button>
               </RouterLink>
             </div>
             <div class="options__whitespace"></div>
@@ -306,10 +458,16 @@ export default {
           />
           <div class="options__label">
             <div class="options__text-block">
-              <h2 class="options__heading">Где купить</h2>
-              <p class="options__text">Найти ближайший магазин</p>
+              <h2 class="options__heading">
+                {{ langDataLoaded == true ? langData.options.title2 : "" }}
+              </h2>
+              <p class="options__text">
+                {{ langDataLoaded == true ? langData.options.subtitle2 : "" }}
+              </p>
               <RouterLink to="/shops">
-                <button class="options__button">Найти магазин</button>
+                <button class="options__button">
+                  {{ langDataLoaded == true ? langData.options.button2 : "" }}
+                </button>
               </RouterLink>
             </div>
             <div class="options__whitespace"></div>
@@ -323,10 +481,16 @@ export default {
           />
           <div class="options__label">
             <div class="options__text-block">
-              <h2 class="options__heading">Дистрибьютор</h2>
-              <p class="options__text">Стать официальным партнером</p>
+              <h2 class="options__heading">
+                {{ langDataLoaded == true ? langData.options.title3 : "" }}
+              </h2>
+              <p class="options__text">
+                {{ langDataLoaded == true ? langData.options.subtitle3 : "" }}
+              </p>
               <RouterLink to="/distributers">
-                <button class="options__button">Наши контакты</button>
+                <button class="options__button">
+                  {{ langDataLoaded == true ? langData.options.button3 : "" }}
+                </button>
               </RouterLink>
             </div>
             <div class="options__whitespace"></div>
@@ -340,84 +504,48 @@ export default {
   <section class="warranty">
     <div class="warranty__container">
       <div class="warranty__flex">
-        <h2>ГАРАНТИЯ И СЕРВИС</h2>
+        <h2>{{ langDataLoaded == true ? langData.service.title : "" }}</h2>
         <hr />
         <p class="warranty__p-bright">
-          Узнайте больше о гарантийном и постгарантийном обслуживании,
+          {{ langDataLoaded == true ? langData.service.subtitle1 : "" }}
         </p>
-        <p class="warranty__p-dark">узнать о точках сервисного обслуживания</p>
+        <p class="warranty__p-dark">
+          {{ langDataLoaded == true ? langData.service.subtitle2 : "" }}
+        </p>
         <RouterLink to="/service">
-          <button class="warranty__button">УЗНАТЬ ПОДРОБНЕЕ</button>
+          <button class="warranty__button">
+            {{ langDataLoaded == true ? langData.service.button : "" }}
+          </button>
         </RouterLink>
         <div class="warranty__wrap">
           <a class="warranty__link" href="mailto:service@attache.ru">
             <img src="../assets/img/warranty/mail.svg" alt="Mail" />&nbsp;<span>
-              service@attache.ru
+              {{ langDataLoaded == true ? langData.service.email : "" }}
             </span>
           </a>
           <a class="warranty__link" href="tel:+74956402502">
             <img
               src="../assets/img/warranty/phone.svg"
               alt="Phone"
-            />&nbsp;<span>+7(495) 640-25-02</span></a
+            />&nbsp;<span>{{
+              langDataLoaded == true ? langData.service.phone : ""
+            }}</span></a
           >
         </div>
       </div>
     </div>
   </section>
 
+  <SliderNews></SliderNews>
+
   <!-- Новости -->
-  <section class="news">
-    <div class="container">
-      <div class="news__block">
-        <h2 class="news__heading">НОВОСТИ</h2>
-        <hr class="news__line" />
-        <div class="news__flex">
-          <RouterLink class="news__parent-link" to="under-construction">
-            <div class="news__item">
-              <img
-                class="news__img"
-                src="../assets/img/news/news-1.png"
-                alt="Opening"
-              />
-              <h2 class="news__title">ОТКРЫТИЕ ОФИЦИАЛЬНОГО САЙТА</h2>
-              <p class="news__text">
-                Открытие нового официального сайта ATTACHEWATCHES 20.10.2021
-                новый фирменный бутик, где Вы сможете подобрать для себя любые
-                часы из коллекций ATTACHE...
-              </p>
-              <a class="news__link" href="#"
-                >Узнать подробнее
-                <hr class="news__redline" />
-              </a>
-            </div>
-          </RouterLink>
-          <RouterLink class="news__parent-link" to="under-construction">
-            <div class="news__item">
-              <img
-                class="news__img"
-                src="../assets/img/news/news-2.png"
-                alt="New collection"
-              />
-              <h2 class="news__title">ATTACHE COLLECTIONS</h2>
-              <p class="news__text">Мы запускаем линейку ATTACHE</p>
-              <a class="news__link" href="#"
-                >Узнать подробнее
-                <hr class="news__redline" />
-              </a>
-            </div>
-          </RouterLink>
-        </div>
-        <div class="news__bottom"></div>
-      </div>
-    </div>
-  </section>
 </template>
 
 <style>
 .carousel {
   top: -105px;
 }
+
 .carousel__pagination {
   width: 100%;
   justify-content: space-between;
@@ -426,6 +554,7 @@ export default {
   width: 100%;
   margin-right: 5px;
 }
+
 .carousel__pagination-item:last-child {
   margin-right: 0;
 }

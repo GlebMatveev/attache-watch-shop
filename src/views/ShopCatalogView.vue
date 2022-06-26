@@ -1,6 +1,5 @@
 <script>
 import { useSettingsStore } from "@/stores/settings";
-import { HTTP } from "../main";
 
 export default {
   setup() {
@@ -9,8 +8,39 @@ export default {
   },
   data() {
     return {
-      // originalProducts: "",
-      // products: "",
+      langData: {},
+      langDataLoaded: false,
+
+      products: "",
+      productsLoaded: false,
+
+      subcategories: "",
+      subcategoriesLoaded: false,
+
+      productsBySubcategories: [],
+      productsBySubcategoriesLoaded: false,
+
+      properties: [],
+      propertiesLoaded: false,
+
+      filters: [],
+      filtersLoaded: false,
+
+      filtersSelected: [],
+
+      originalProducts: "",
+
+      modelWords: ["модель", "модели", "моделей"],
+
+      // titleFilters: {
+      //   model: "Модель",
+      //   case: "Материал корпуса",
+      //   covering: "Покрытие корпуса",
+      //   mechanism: "Тип механизма",
+      //   waterproofing: "Водозащита",
+      //   watchband: "Ремень/браслет",
+      //   price: "Цена",
+      // },
 
       // filters: {
       //   model: ["Automatic", "Chronograph", "24 HOUR"],
@@ -21,6 +51,15 @@ export default {
       //   watchband: ["Каучук", "Кожа"],
       //   price: ["20 000", "25 000", "30 000", "35 000"],
       // },
+      // filtersTitles: {
+      //   model: "Модель",
+      //   case: "Материал корпуса",
+      //   covering: "Покрытие корпуса",
+      //   mechanism: "Тип механизма",
+      //   waterproofing: "Водозащита",
+      //   watchband: "Ремень/браслет",
+      //   price: "Цена",
+      // },
       // currentFilters: {
       //   model: "Модель",
       //   case: "Материал корпуса",
@@ -30,161 +69,164 @@ export default {
       //   watchband: "Ремень/браслет",
       //   price: "Цена",
       // },
-
-      titleFilters: {
-        model: "Модель",
-        case: "Материал корпуса",
-        covering: "Покрытие корпуса",
-        mechanism: "Тип механизма",
-        waterproofing: "Водозащита",
-        watchband: "Ремень/браслет",
-        price: "Цена",
-      },
-
-      modelWords: ["модель", "модели", "моделей"],
-
-      subcategories: "",
-      products: "",
-      productsByCategories: [],
-
-      filters: {
-        model: ["Automatic", "Chronograph", "24 HOUR"],
-        case: ["Нержавеющая сталь", "Алюминий"],
-        covering: ["Полированное", "Хромированное"],
-        mechanism: ["Хронограф", "Автоматический"],
-        waterproofing: ["100ATM (100 МЕТРОВ)", "5ATM (5 МЕТРОВ)", "нет"],
-        watchband: ["Каучук", "Кожа"],
-        price: ["20 000", "25 000", "30 000", "35 000"],
-      },
-      filtersTitles: {
-        model: "Модель",
-        case: "Материал корпуса",
-        covering: "Покрытие корпуса",
-        mechanism: "Тип механизма",
-        waterproofing: "Водозащита",
-        watchband: "Ремень/браслет",
-        price: "Цена",
-      },
-      currentFilters: {
-        model: "Модель",
-        case: "Материал корпуса",
-        covering: "Покрытие корпуса",
-        mechanism: "Тип механизма",
-        waterproofing: "Водозащита",
-        watchband: "Ремень/браслет",
-        price: "Цена",
-      },
     };
   },
 
   watch: {
-    // someVariable: {
-    //   handler() {
-    //   },
-    //   deep: true,
-    // },
-    // "currentFilters.model": function () {
-    //   if (this.currentFilters.model == this.titleFilters.model) {
-    //     this.getProducts();
-    //   } else {
-    //     this.getProductsWithFilter();
-    //   }
-    // },
-    // "currentFilters.case": function () {
-    //   if (this.currentFilters.case == this.titleFilters.case) {
-    //     this.getProducts();
-    //   } else {
-    //     this.getProductsWithFilter();
-    //   }
-    // },
-    // "currentFilters.covering": function () {
-    //   if (this.currentFilters.covering == this.titleFilters.covering) {
-    //     this.getProducts();
-    //   } else {
-    //     this.getProductsWithFilter();
-    //   }
-    // },
-    // "currentFilters.mechanism": function () {
-    //   if (this.currentFilters.mechanism == this.titleFilters.mechanism) {
-    //     this.getProducts();
-    //   } else {
-    //     this.getProductsWithFilter();
-    //   }
-    // },
-    // "currentFilters.waterproofing": function () {
-    //   if (
-    //     this.currentFilters.waterproofing == this.titleFilters.waterproofing
-    //   ) {
-    //     this.getProducts();
-    //   } else {
-    //     this.getProductsWithFilter();
-    //   }
-    // },
-    // "currentFilters.watchband": function () {
-    //   if (this.currentFilters.watchband == this.titleFilters.watchband) {
-    //     this.getProducts();
-    //   } else {
-    //     this.getProductsWithFilter();
-    //   }
-    // },
-    // "currentFilters.price": function () {
-    //   if (this.currentFilters.price == this.titleFilters.price) {
-    //     this.getProducts();
-    //   } else {
-    //     this.getProductsWithFilter();
-    //   }
-    // },
+    "settingsStore.langSelected": function () {
+      this.initialize();
+    },
+    langDataLoaded() {
+      if (
+        this.langDataLoaded == true &&
+        this.subcategoriesLoaded == true &&
+        this.productsLoaded == true &&
+        this.productsBySubcategoriesLoaded == true &&
+        this.propertiesLoaded == true &&
+        this.filtersLoaded == true
+      ) {
+        this.settingsStore.allLoaded = false;
+      }
+    },
+    subcategoriesLoaded() {
+      if (
+        this.langDataLoaded == true &&
+        this.subcategoriesLoaded == true &&
+        this.productsLoaded == true &&
+        this.productsBySubcategoriesLoaded == true &&
+        this.propertiesLoaded == true &&
+        this.filtersLoaded == true
+      ) {
+        this.settingsStore.allLoaded = false;
+      }
+    },
+    productsLoaded() {
+      if (
+        this.langDataLoaded == true &&
+        this.subcategoriesLoaded == true &&
+        this.productsLoaded == true &&
+        this.productsBySubcategoriesLoaded == true &&
+        this.propertiesLoaded == true &&
+        this.filtersLoaded == true
+      ) {
+        this.settingsStore.allLoaded = false;
+      }
+    },
+    productsBySubcategoriesLoaded() {
+      if (
+        this.langDataLoaded == true &&
+        this.subcategoriesLoaded == true &&
+        this.productsLoaded == true &&
+        this.productsBySubcategoriesLoaded == true &&
+        this.propertiesLoaded == true &&
+        this.filtersLoaded == true
+      ) {
+        this.settingsStore.allLoaded = false;
+      }
+    },
+    propertiesLoaded() {
+      if (
+        this.langDataLoaded == true &&
+        this.subcategoriesLoaded == true &&
+        this.productsLoaded == true &&
+        this.productsBySubcategoriesLoaded == true &&
+        this.propertiesLoaded == true &&
+        this.filtersLoaded == true
+      ) {
+        this.settingsStore.allLoaded = false;
+      }
+    },
+    filtersLoaded() {
+      if (
+        this.langDataLoaded == true &&
+        this.subcategoriesLoaded == true &&
+        this.productsLoaded == true &&
+        this.productsBySubcategoriesLoaded == true &&
+        this.propertiesLoaded == true &&
+        this.filtersLoaded == true
+      ) {
+        this.settingsStore.allLoaded = false;
+      }
+    },
   },
   beforeMount() {
     this.initialize();
   },
   methods: {
     initialize() {
+      this.settingsStore.allLoaded = true;
+
+      this.langData = {};
+      this.langDataLoaded = false;
+      this.products = "";
+      this.productsLoaded = false;
+      this.subcategories = "";
+      this.subcategoriesLoaded = false;
+      this.productsBySubcategories = [];
+      this.productsBySubcategoriesLoaded = false;
+      this.properties = "";
+      this.propertiesLoaded = false;
+      this.filtersLoaded = false;
+
       this.getSubcategories();
 
-      this.getProducts();
-
-      // this.getFilterParameters();
+      this.getLangData(this.settingsStore.langSelected, "catalog");
     },
 
-    // getFilterParameters() {
-    //   for (let keyMain in this.products) {
-    //     console.log("this.products[keyMain]: ", this.products[keyMain]);
-
-    //     for (let keyAdd in this.filters) {
-    //       console.log("this.products[keyMain]: ", this.products[keyMain]);
-    //     }
-    //   }
-    // },
-
-    getSubcategories() {
-      HTTP.get()
+    getLangData(currentLanguage, currentComponent) {
+      this.axios
+        // get file path from Pinia
+        .get(this.settingsStore.langFile[currentLanguage])
         .then((response) => {
-          this.subcategories = response.data.subcategories;
+          for (let key1 in response.data[currentComponent]) {
+            Object.keys(response.data[currentComponent][key1]).forEach(
+              (key2) => {
+                Object.keys(response.data[currentComponent][key1]).forEach(
+                  (key3) => {
+                    this.langData[key2] =
+                      response.data[currentComponent][key1][key3];
+                  }
+                );
+              }
+            );
+          }
 
-          this.filterSubcategoriesByCategoryName("Часы");
+          this.langDataLoaded = true;
         })
         .catch((error) => {
           console.log(error);
         });
     },
 
-    filterSubcategoriesByCategoryName(categoryName) {
-      this.subcategories = this.subcategories.filter((item) => {
-        if (item.category == categoryName) {
-          return true;
-        } else {
-          return false;
-        }
-      });
+    getSubcategories() {
+      this.axios
+        .get(this.settingsStore.api + "/subcategories-by-category/" + "1") // часы
+        .then((response) => {
+          this.subcategories = response.data;
+          this.subcategoriesLoaded = true;
+
+          this.getAllProperties();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
 
     getProducts() {
-      HTTP.get()
+      this.axios
+        .get(this.settingsStore.api + "/products")
         .then((response) => {
-          this.products = response.data.products;
+          this.products = response.data;
+          this.productsLoaded = true;
+
+          this.originalProducts = Object.assign(
+            this.originalProducts,
+            this.products
+          );
 
           this.filterProductsBySubcategories();
+
+          this.getValuesByProperties();
         })
         .catch((error) => {
           console.log(error);
@@ -198,18 +240,98 @@ export default {
 
       for (let key in this.subcategories) {
         tempFilteredProducts = tempProducts.filter((item) => {
-          if (item.subcategory == this.subcategories[key].subcategory) {
+          if (
+            item["subcategory_" + this.settingsStore.langSelected] ==
+            this.subcategories[key]["title_" + this.settingsStore.langSelected]
+          ) {
             return true;
           } else {
             return false;
           }
         });
 
-        this.productsByCategories[this.subcategories[key].subcategory] =
-          tempFilteredProducts;
+        this.productsBySubcategories[
+          this.subcategories[key]["subcategory_id"]
+        ] = tempFilteredProducts;
 
         tempFilteredProducts = "";
       }
+
+      this.productsBySubcategoriesLoaded = true;
+    },
+
+    getAllProperties() {
+      this.axios
+        .get(this.settingsStore.api + "/properties")
+        .then((response) => {
+          this.properties = response.data;
+
+          this.propertiesLoaded = true;
+
+          this.getProducts();
+        })
+        .catch((error) => {
+          console.log(error);
+        });
+    },
+
+    getValuesByProperties() {
+      for (let keyMain in this.properties) {
+        this.filters[this.properties[keyMain].id] = [];
+
+        // filters headers initialization
+        this.filtersSelected[this.properties[keyMain].id] =
+          this.properties[keyMain]["title_" + this.settingsStore.langSelected];
+
+        for (let key in this.products) {
+          if (
+            !this.filters[this.properties[keyMain].id].includes(
+              this.products[key][
+                this.properties[keyMain].id +
+                  "_" +
+                  this.settingsStore.langSelected
+              ]
+            )
+          ) {
+            this.filters[this.properties[keyMain].id].push(
+              this.products[key][
+                this.properties[keyMain].id +
+                  "_" +
+                  this.settingsStore.langSelected
+              ]
+            );
+          }
+        }
+      }
+
+      this.filtersLoaded = true;
+    },
+
+    filterProducts() {
+      this.products = Object.assign(this.products, this.originalProducts);
+
+      for (let keyMain in this.properties) {
+        this.products = this.products.filter((item) => {
+          if (
+            this.filtersSelected[this.properties[keyMain].id] ==
+            this.properties[keyMain]["title_" + this.settingsStore.langSelected]
+          ) {
+            return true;
+          } else if (
+            item[
+              this.properties[keyMain].id +
+                "_" +
+                this.settingsStore.langSelected
+            ] == this.filtersSelected[this.properties[keyMain].id]
+          ) {
+            return true;
+          } else {
+            return false;
+          }
+        });
+      }
+
+      this.filterProductsBySubcategories();
     },
 
     declOfWord(n, titles) {
@@ -221,6 +343,11 @@ export default {
           : 2
       ];
     },
+
+    // Цены по разрядам
+    numberWithSpaces(x) {
+      return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, " ");
+    },
   },
 };
 </script>
@@ -229,32 +356,33 @@ export default {
   <section class="minimalTop">
     <div class="container">
       <div class="minimalTop__name">
-        <h1 class="minimalTop__heading">Коллекция</h1>
+        <h1 class="minimalTop__heading">
+          {{ langDataLoaded == true ? langData.page.title : "" }}
+        </h1>
         <hr class="minimalTop__deco" />
       </div>
     </div>
     <hr />
 
-    <!-- <br />
-    <div>
-      <b>products: </b><br />
-      {{ products }}
-    </div>-->
-
-    <div class="container">
+    <div v-if="filtersLoaded" class="container">
       <div class="filters">
         <div
-          v-for="(x0, index0) in filters"
-          :key="`${index0}-${x0}`"
+          v-for="(property, index0) in properties"
+          :key="`${index0}-${property}`"
           class="filters__select"
         >
-          <select v-model="currentFilters[index0]" name="model">
-            <option selected="selected">{{ titleFilters[index0] }}</option>
+          <select
+            v-model="filtersSelected[property.id]"
+            @change="filterProducts()"
+          >
+            <option selected="selected">
+              {{ property["title_" + settingsStore.langSelected] }}
+            </option>
             <option
-              v-for="(x1, index1) in filters[index1]"
-              :key="`${index1}-${y}`"
+              v-for="(value, index1) in filters[property.id]"
+              :key="`${index1}-${value}`"
             >
-              {{ x1 }} {{ index1 }}
+              {{ value }}
             </option>
           </select>
         </div>
@@ -267,28 +395,58 @@ export default {
   </section>
 
   <!--  -->
-  <section
-    v-for="(x, index2) in subcategories"
-    :key="`${index2}-${x}`"
+  <!-- <section
+    v-for="(subcategory, index2) in subcategories"
+    :key="`${index2}-${subcategory}`"
     class="collection-block"
   >
-    <div class="container">
+    <div
+      v-if="
+        productsBySubcategoriesLoaded
+          ? productsBySubcategories[subcategory.subcategory_id].length > 0
+          : ''
+      "
+      class="container"
+    > -->
+  <section
+    v-for="(subcategory, index2) in subcategories"
+    :key="`${index2}-${subcategory}`"
+    class="collection-block"
+  >
+    <div
+      v-if="
+        productsBySubcategoriesLoaded
+          ? productsBySubcategories[subcategory.subcategory_id].length > 0
+          : ''
+      "
+      class="container"
+    >
       <div class="collection-block__wrap">
         <div class="collection-block__left">
           <h2 class="collection-block__heading">
-            {{ subcategories[index2].subcategory }}
+            {{
+              subcategoriesLoaded == true
+                ? subcategory["title_" + settingsStore.langSelected]
+                : ""
+            }}
           </h2>
           <div class="collection-block__redline"></div>
         </div>
         <div class="collection-block__right">
           <span class="collection-block__text">
-            <!-- {{ productsByCategories[subcategories[index2].subcategory].length }}
             {{
-              declOfWord(
-                productsByCategories[subcategories[index2].subcategory].length,
-                modelWords
-              )
-            }} -->
+              productsBySubcategoriesLoaded
+                ? productsBySubcategories[subcategory.subcategory_id].length
+                : ""
+            }}
+            {{
+              productsBySubcategoriesLoaded
+                ? declOfWord(
+                    productsBySubcategories[subcategory.subcategory_id].length,
+                    langDataLoaded == true ? langData.page.declension : ""
+                  )
+                : ""
+            }}
           </span>
           <div class="collection-block__redline"></div>
         </div>
@@ -300,49 +458,50 @@ export default {
     <div class="container">
       <div class="collection-block__grid">
         <RouterLink
-          v-for="(x3, index3) in productsByCategories[
-            subcategories[index2].subcategory
+          v-for="(product, index3) in productsBySubcategories[
+            subcategory.subcategory_id
           ]"
-          :key="`${index3}-${x3}`"
+          :key="`${index3}-${product}`"
+          class="clock__link clock__link-bordered"
           :to="{
             name: 'detail',
             params: {
-              id: productsByCategories[subcategories[index2].subcategory][
-                index3
-              ].id,
+              id: productsBySubcategoriesLoaded == true ? product.id : '',
             },
           }"
-          class="clock__link clock__link-bordered"
         >
           <div class="clock">
             <img
               class="clock__img"
               :src="
-                productsByCategories[subcategories[index2].subcategory][index3]
-                  .photoMain
+                productsBySubcategoriesLoaded == true ? product.photo_main : ''
               "
               alt="Watch"
             />
             <h2 class="clock__head">
               {{
-                productsByCategories[subcategories[index2].subcategory][index3]
-                  .subcategory
+                productsBySubcategoriesLoaded == true
+                  ? product["subcategory_" + settingsStore.langSelected]
+                  : ""
               }}
             </h2>
             <span class="clock__name">{{
-              productsByCategories[subcategories[index2].subcategory][index3]
-                .model
+              productsBySubcategoriesLoaded == true
+                ? product["title_" + settingsStore.langSelected]
+                : ""
             }}</span>
             <hr class="clock__deco" />
             <span class="clock__art">{{
-              productsByCategories[subcategories[index2].subcategory][index3]
-                .articul
+              productsBySubcategoriesLoaded == true ? product["articul"] : ""
             }}</span>
             <div class="clock__price">
-              <span class="clock__amount">{{
-                productsByCategories[subcategories[index2].subcategory][index3]
-                  .price
-              }}</span>
+              <span class="clock__amount"
+                >{{
+                  productsBySubcategoriesLoaded == true
+                    ? numberWithSpaces(+product["price"])
+                    : ""
+                }}
+              </span>
               <span class="clock__currency">₽</span>
             </div>
             <hr class="clock__redline" />
@@ -351,25 +510,42 @@ export default {
       </div>
     </div>
     <hr class="collection-block__border" />
-    <div class="showcase__button-wrapper">
+    <div
+      v-if="
+        productsBySubcategoriesLoaded
+          ? productsBySubcategories[subcategory.subcategory_id].length > 0
+          : ''
+      "
+      class="showcase__button-wrapper"
+    >
       <RouterLink
         :to="{
           name: 'catalog-collection',
           params: {
-            subcategory: subcategories[index2].subcategory,
+            subcategory:
+              subcategoriesLoaded == true ? subcategory.title_eng : '',
           },
         }"
       >
-        <button class="showcase__button">Посмотреть всю коллекцию</button>
+        <button class="showcase__button">
+          {{ langDataLoaded == true ? langData.page.button : "" }}
+        </button>
       </RouterLink>
     </div>
-    <div class="overview__expand-wrapper">
+    <div
+      v-if="
+        productsBySubcategoriesLoaded
+          ? productsBySubcategories[subcategory.subcategory_id].length > 0
+          : ''
+      "
+      class="overview__expand-wrapper"
+    >
       <button class="overview__button">
         <img src="../assets/img/overview/red-triangle.svg" alt="" />
       </button>
     </div>
   </section>
-  <hr class="overview__divider" />
+  <!-- <hr class="overview__divider" /> -->
 
   <hr class="overview__divider" />
 

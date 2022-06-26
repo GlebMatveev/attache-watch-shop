@@ -114,12 +114,12 @@ export default {
     <div v-if="show" class="modal-mask">
       <div class="modal-wrapper">
         <div class="modal-container">
-          <div class="order__close" @click="$emit('close')">✕</div>
-          <h2 class="order__heading">ОФОРМЛЕНИЕ ЗАКАЗА</h2>
-          <span class="order__text"
+          <div class="mod-order__close" @click="$emit('close')">✕</div>
+          <h2 class="mod-order__heading">ОФОРМЛЕНИЕ ЗАКАЗА</h2>
+          <span class="mod-order__text"
             >ЗАПОЛНИТЕ ВСЕ ПОЛЯ ДАННЫЕ ДЛЯ СОЗДАНИЯ ЗАКАЗА</span
           >
-          <div class="order__form-block">
+          <div class="mod-order__form-block">
             <!-- <div>
               <b>cart: </b><br />
               {{ cart }}
@@ -139,7 +139,7 @@ export default {
             <form method="POST" action="php/form.php">
               <input
                 v-model="formData.name"
-                class="order__input"
+                class="mod-order__input"
                 type="text"
                 name="name"
                 placeholder="Ваше имя"
@@ -147,7 +147,7 @@ export default {
               />
               <input
                 v-model="formData.phone"
-                class="order__input"
+                class="mod-order__input"
                 type="tel"
                 name="phone"
                 placeholder="Мобильный телефон"
@@ -155,7 +155,7 @@ export default {
               />
               <input
                 v-model="formData.email"
-                class="order__input"
+                class="mod-order__input"
                 type="email"
                 name="email"
                 placeholder="Электронная почта"
@@ -163,7 +163,7 @@ export default {
               />
               <input
                 v-model="formData.address"
-                class="order__input"
+                class="mod-order__input"
                 type="text"
                 name="address"
                 placeholder="Адрес доставки"
@@ -171,7 +171,7 @@ export default {
               />
               <textarea
                 v-model="formData.comment"
-                class="order__input order__textArea"
+                class="mod-order__input mod-order__textArea"
                 name="comment"
                 placeholder="Комментарий к заказу"
               ></textarea>
@@ -182,7 +182,11 @@ export default {
                 :value="JSON.stringify(formData.order)"
               />
 
-              <button class="order__button" type="submit" @click="deleteCart()">
+              <button
+                class="mod-order__button"
+                type="submit"
+                @click="deleteCart()"
+              >
                 Сделать заказ
               </button>
             </form>
@@ -246,5 +250,33 @@ export default {
 .modal-leave-to .modal-container {
   -webkit-transform: scale(1.1);
   transform: scale(1.1);
+}
+
+@media (max-width: 700px) {
+  .modal-container {
+    width: 500px;
+  }
+}
+
+@media (max-width: 590px) {
+  .modal-container {
+    width: 400px;
+  }
+
+  .mod-order__text {
+    font-size: 12px;
+  }
+}
+
+@media (max-width: 490px) {
+  .modal-container {
+    width: 300px;
+  }
+}
+
+@media (max-width: 375px) {
+  .modal-container {
+    width: 250px;
+  }
 }
 </style>

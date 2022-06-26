@@ -1,7 +1,6 @@
 <script>
 import HeaderBreadcrumbs from "@/components/HeaderBreadcrumbs.vue";
 import { useSettingsStore } from "@/stores/settings";
-import { HTTP } from "../main";
 
 export default {
   components: {
@@ -9,28 +8,76 @@ export default {
   },
   setup() {
     const settingsStore = useSettingsStore();
+    // settingsStore.$subscribe((mutation, state) => {
+    //   console.log(mutation, state);
+    // });
     return { settingsStore };
   },
   data() {
     return {
+      langData: {},
+      langDataLoaded: false,
+      langSelected: "",
+
       isHome: false,
+      isBanner: false,
 
       cartCount: 0,
 
       menuToggle: false,
 
       subcategories: "",
+      subcategoriesLoaded: false,
+      // products: "",
+      // productsLoaded: false,
+
+      // productsByCategories: [],
+      // productsByCategoriesLoaded: false,
 
       isLoaded: false,
+
+      test: "",
+
+      menuListToggle: false,
+      languageListToggle: false,
     };
   },
   watch: {
     $route() {
       this.$route.name == "home" ? (this.isHome = true) : (this.isHome = false);
+
+      if (
+        this.$route.name == "home" ||
+        this.$route.name == "brand" ||
+        this.$route.name == "history" ||
+        this.$route.name == "catalog-collection" ||
+        this.$route.name == "detail" ||
+        this.$route.name == "news" ||
+        this.$route.name == "news-detail" ||
+        this.$route.name == "presentation" ||
+        this.$route.name == "delivery" ||
+        this.$route.name == "contacts" ||
+        this.$route.name == "news-detail"
+      ) {
+        this.isBanner = true;
+      } else {
+        this.isBanner = false;
+      }
+
+      if (this.isHome == true || this.isBanner == true) {
+        this.$refs.header.classList.add("header-down");
+        this.$refs.header.classList.remove("header-up");
+      } else if (this.isHome == false || this.isBanner == false) {
+        this.$refs.header.classList.add("header-up");
+        this.$refs.header.classList.remove("header-down");
+      }
+    },
+    "settingsStore.langSelected": function () {
+      this.getLangData(this.settingsStore.langSelected, "header");
     },
   },
 
-  async beforeMount() {
+  beforeMount() {
     this.initialize();
 
     if (localStorage.cartCount) {
@@ -38,45 +85,182 @@ export default {
     }
   },
 
+  mounted() {
+    window.addEventListener("scroll", this.onScroll);
+    window.addEventListener("mouseup", this.onMouseUp);
+  },
+
   methods: {
-    initialize() {
-      this.getSubcategories();
+    onMouseUp() {
+      if (
+        event.target.className != "header__collections-arrow" &&
+        event.target.className != "header__collections-link"
+      ) {
+        this.menuListToggle = false;
+        this.languageListToggle = false;
+      }
+    },
+    onScroll() {
+      let st = window.pageYOffset;
+
+      if (this.isHome == true || this.isBanner == true) {
+        if (st == 0) {
+          this.$refs.header.classList.add("header-down");
+          this.$refs.header.classList.remove("header-up");
+
+          this.settingsStore.scrollUp = false;
+          this.settingsStore.scrollDown = true;
+        } else if (st > this.lastScrollTop) {
+          this.$refs.header.classList.add("header-down");
+          this.$refs.header.classList.remove("header-up");
+
+          this.settingsStore.scrollUp = false;
+          this.settingsStore.scrollDown = true;
+        } else {
+          this.$refs.header.classList.add("header-up");
+          this.$refs.header.classList.remove("header-down");
+
+          this.settingsStore.scrollUp = true;
+          this.settingsStore.scrollDown = false;
+        }
+        this.lastScrollTop = st;
+      } else if (this.isHome == false || this.isBanner == false) {
+        if (st > this.lastScrollTop) {
+          this.$refs.header.classList.add("header-down");
+          this.$refs.header.classList.remove("header-up");
+
+          this.settingsStore.scrollUp = false;
+          this.settingsStore.scrollDown = true;
+        } else {
+          this.$refs.header.classList.add("header-up");
+          this.$refs.header.classList.remove("header-down");
+
+          this.settingsStore.scrollUp = true;
+          this.settingsStore.scrollDown = false;
+        }
+        this.lastScrollTop = st;
+      }
     },
 
-    async getSubcategories() {
-      await HTTP.get()
+    initialize() {
+      this.getSubcategories();
+
+      this.defineLanguage();
+      this.getLangData(this.settingsStore.langSelected, "header");
+    },
+
+    getLangData(currentLanguage, currentComponent) {
+      this.axios
+        // get file path from Pinia
+        .get(this.settingsStore.langFile[currentLanguage])
         .then((response) => {
-          this.subcategories = response.data.subcategories;
+          for (let key1 in response.data[currentComponent]) {
+            Object.keys(response.data[currentComponent][key1]).forEach(
+              (key2) => {
+                Object.keys(response.data[currentComponent][key1]).forEach(
+                  (key3) => {
+                    this.langData[key2] =
+                      response.data[currentComponent][key1][key3];
+                  }
+                );
+              }
+            );
+          }
 
-          this.filterSubcategoriesByCategoryName("Часы");
-
-          this.isLoaded = true;
+          this.langDataLoaded = true;
         })
         .catch((error) => {
           console.log(error);
         });
     },
 
-    filterSubcategoriesByCategoryName(categoryName) {
-      this.subcategories = this.subcategories.filter((item) => {
-        if (item.category == categoryName) {
-          return true;
-        } else {
-          return false;
-        }
-      });
+    defineLanguage() {
+      if (localStorage.lang) {
+        this.settingsStore.langSelected = localStorage.lang;
+      } else {
+        localStorage.setItem("lang", this.settingsStore.langDefault.toString());
+        this.settingsStore.langSelected = localStorage.lang;
+      }
     },
 
-    closeMenuList() {
-      let elem = document.querySelector("#menu-list");
+    setLanguage(selectedLanguage) {
+      localStorage.setItem("lang", selectedLanguage);
+      this.settingsStore.langSelected = selectedLanguage;
+
+      this.languageListToggle = false;
+
+      // this.closeLanguageMenu();
+      // this.closeLanguageMobileMenu();
+    },
+
+    closeLanguageMenu() {
+      let elem = document.querySelector("#language-menu");
       elem.removeAttribute("open");
+    },
+
+    closeLanguageMobileMenu() {
+      let elem = document.querySelector("#language-menu");
+      elem.removeAttribute("open");
+    },
+
+    // closeMenuList() {
+    //   let elem = document.querySelector("#menu-list");
+    //   elem.removeAttribute("open");
+    // },
+
+    changeMenuListToggle() {
+      this.menuListToggle == true
+        ? (this.menuListToggle = false)
+        : (this.menuListToggle = true);
+    },
+
+    changeLanguageListToggle() {
+      this.languageListToggle == true
+        ? (this.languageListToggle = false)
+        : (this.languageListToggle = true);
+    },
+
+    // async getSubcategories() {
+    //   await HTTP.get()
+    //     .then((response) => {
+    //       this.subcategories = response.data.subcategories;
+
+    //       this.filterSubcategoriesByCategoryName("Часы");
+
+    //       this.isLoaded = true;
+    //     })
+    //     .catch((error) => {
+    //       console.log(error);
+    //     });
+    // },
+
+    // filterSubcategoriesByCategoryName(categoryName) {
+    //   this.subcategories = this.subcategories.filter((item) => {
+    //     if (item.category == categoryName) {
+    //       return true;
+    //     } else {
+    //       return false;
+    //     }
+    //   });
+    // },
+
+    getSubcategories() {
+      this.axios
+        .get(this.settingsStore.api + "/subcategories-by-category/" + "1") // часы
+        .then((response) => {
+          this.subcategories = response.data;
+          this.subcategoriesLoaded = true;
+        })
+        .catch((error) => {
+          console.log(error);
+        });
     },
   },
 };
 </script>
 
 <template>
-  <header class="header">
+  <header ref="header" class="header">
     <div class="header__top">
       <div class="container">
         <!-- Блок, в котором флексом разнесены лого,навигация и значки -->
@@ -91,57 +275,110 @@ export default {
           <!-- Блок навигации -->
           <div class="header__center">
             <ul class="header__list">
-              <!-- <li class="header__item">
-                <RouterLink to="/presentation" class="header__link"
-                  >Часы
-                </RouterLink>
-              </li> -->
               <li class="header__item">
-                <details id="menu-list" class="header__watch-details">
-                  <summary>
-                    <RouterLink
-                      to="/presentation"
-                      class="header__details-link"
-                      @click="closeMenuList()"
-                    >
-                      Часы
+                <div class="header__collections-main">
+                  <div class="header__collection-flex">
+                    <RouterLink class="header__collections-parent" to="/catalog"
+                      >{{ langDataLoaded == true ? langData.menu.watch : "" }}
                     </RouterLink>
-                  </summary>
-                  <div v-if="isLoaded" class="header__watch-details-content">
+                    <!-- <a> -->
+
+                    <img
+                      src="../assets/img/header/arrow-down.svg"
+                      alt="Arrow"
+                      class="header__collections-arrow"
+                      @click="changeMenuListToggle()"
+                    />
+                    <!-- </a> -->
+                  </div>
+                  <div
+                    v-if="subcategoriesLoaded && menuListToggle"
+                    class="header__collections-container"
+                  >
+                    <ul class="header__collections-list">
+                      <li
+                        v-for="(item, index0) in subcategories"
+                        :key="`${index0}-${item}`"
+                        class="header__collections-item"
+                      >
+                        <RouterLink
+                          class="header__collections-link"
+                          :to="{
+                            name: 'catalog-collection',
+                            params: {
+                              subcategory: item.title_eng,
+                            },
+                          }"
+                          @click="menuListToggle = false"
+                          >{{
+                            item["title_" + settingsStore.langSelected]
+                          }}</RouterLink
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+                <!-- <div class="header__redline-special"></div> -->
+              </li>
+
+              <!-- <li class="header__item">
+                <div id="menu-list" class="header__watch-details">
+                  <RouterLink
+                    to="/catalog"
+                    class="header__details-link"
+                    @click="menuListToggle = false"
+                  >
+                    {{ langDataLoaded == true ? langData.menu.watch : "" }}
+                  </RouterLink>
+                  <div
+                    class="header__watch-summary"
+                    @click="changeMenuListToggle()"
+                  ></div>
+                  <div
+                    v-if="subcategoriesLoaded && menuListToggle"
+                    class="header__watch-details-content"
+                  >
                     <RouterLink
-                      v-for="(x0, index0) in subcategories"
-                      :key="`${index0}-${x0}`"
+                      v-for="(item, index0) in subcategories"
+                      :key="`${index0}-${item}`"
                       class="header__language"
                       :to="{
                         name: 'catalog-collection',
                         params: {
-                          subcategory: subcategories[index0].subcategory,
+                          subcategory: item.title_eng,
                         },
                       }"
-                      @click="closeMenuList()"
                     >
-                      {{ subcategories[index0].subcategory }}
+                      {{ item["title_" + settingsStore.langSelected] }}
                     </RouterLink>
                   </div>
-                </details>
-                <!-- <div class="header__redline-special"></div> -->
-              </li>
-              <li class="header__item">
+                </div>
+                <div class="header__redline-special"></div>
+              </li> -->
+
+              <!-- <li class="header__item">
                 <RouterLink to="/accessories" class="header__link"
                   >Аксессуары
                 </RouterLink>
-              </li>
-              <li class="header__item">
-                <RouterLink to="/brand" class="header__link">Бренд </RouterLink>
-              </li>
+              </li> -->
               <li class="header__item">
                 <RouterLink to="/shops" class="header__link"
-                  >Где купить
+                  >{{ langDataLoaded == true ? langData.menu.shops : "" }}
                 </RouterLink>
               </li>
               <li class="header__item">
                 <RouterLink to="/service" class="header__link"
-                  >Гарантия
+                  >{{ langDataLoaded == true ? langData.menu.service : "" }}
+                </RouterLink>
+              </li>
+              <li class="header__item">
+                <RouterLink to="/brand" class="header__link"
+                  >{{ langDataLoaded == true ? langData.menu.brand : "" }}
+                </RouterLink>
+              </li>
+              <li class="header__item">
+                <RouterLink to="/history" class="header__link"
+                  >{{ langDataLoaded == true ? langData.menu.history : "" }}
                 </RouterLink>
               </li>
             </ul>
@@ -150,15 +387,60 @@ export default {
           <!-- Блок значков-ссылок -->
           <div class="header__right">
             <ul class="header__list">
+              <li class="header__button header__details-block">
+                <div class="header__collections-main">
+                  <div class="header__collection-flex">
+                    <a
+                      class="header__collections-parent"
+                      @click="changeLanguageListToggle()"
+                      >{{ settingsStore.langSelected }}
+                    </a>
+
+                    <img
+                      src="../assets/img/header/arrow-down.svg"
+                      alt="Arrow"
+                      class="header__collections-arrow"
+                      @click="changeLanguageListToggle()"
+                    />
+                  </div>
+                  <div
+                    v-if="languageListToggle"
+                    class="header__collections-container"
+                  >
+                    <ul class="header__collections-list">
+                      <li class="header__collections-item">
+                        <a
+                          class="header__collections-link"
+                          @click="setLanguage('eng')"
+                          >English</a
+                        >
+                      </li>
+                      <li class="header__collections-item">
+                        <a
+                          class="header__collections-link"
+                          @click="setLanguage('rus')"
+                          >Russian</a
+                        >
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </li>
+
               <!-- <li class="header__button header__details-block">
-                <details class="header__details">
-                  <summary>ENG</summary>
+                <details id="language-menu" class="header__details">
+                  <summary>{{ settingsStore.langSelected }}</summary>
                   <div class="header__details-content">
-                    <a class="header__language">English</a>
-                    <a class="header__language">Russian</a>
+                    <a class="header__language" @click="setLanguage('eng')"
+                      >English</a
+                    >
+                    <a class="header__language" @click="setLanguage('rus')"
+                      >Russian</a
+                    >
                   </div>
                 </details>
               </li> -->
+
               <li class="header__button">
                 <RouterLink to="/profile"
                   ><img src="../assets/img/header/profile.svg" alt="User"
@@ -180,7 +462,7 @@ export default {
                 >
               </li>
               <li class="header__button header__button-hide">
-                <a href=""
+                <a href="mailto:info@attachewatches.com"
                   ><img src="../assets/img/header/email.svg" alt="Mail"
                 /></a>
               </li>
@@ -227,15 +509,27 @@ export default {
               to="/presentation"
               class="mobile-menu__link"
               @click="menuToggle = false"
-              >Часы</RouterLink
+              >{{
+                langDataLoaded == true ? langData.menu.watch : ""
+              }}</RouterLink
             >
           </li>
-          <li class="mobile-menu__item">
+          <!-- <li class="mobile-menu__item">
             <RouterLink
               to="/accessories"
               class="mobile-menu__link"
               @click="menuToggle = false"
               >Аксессуары</RouterLink
+            >
+          </li> -->
+          <li class="mobile-menu__item">
+            <RouterLink
+              to="/shops"
+              class="mobile-menu__link"
+              @click="menuToggle = false"
+              >{{
+                langDataLoaded == true ? langData.menu.shops : ""
+              }}</RouterLink
             >
           </li>
           <li class="mobile-menu__item">
@@ -243,23 +537,20 @@ export default {
               to="/brand"
               class="mobile-menu__link"
               @click="menuToggle = false"
-              >Бренд</RouterLink
+              >{{
+                langDataLoaded == true ? langData.menu.brand : ""
+              }}</RouterLink
             >
           </li>
-          <li class="mobile-menu__item">
-            <RouterLink
-              to="/shops"
-              class="mobile-menu__link"
-              @click="menuToggle = false"
-              >Где купить</RouterLink
-            >
-          </li>
+
           <li class="mobile-menu__item">
             <RouterLink
               to="/service"
               class="mobile-menu__link"
               @click="menuToggle = false"
-              >Гарантия</RouterLink
+              >{{
+                langDataLoaded == true ? langData.menu.service : ""
+              }}</RouterLink
             >
           </li>
         </ul>
@@ -288,21 +579,25 @@ export default {
                 alt="Mail"
             /></RouterLink>
           </li>
-          <li class="mobile-menu__button">
+          <!-- <li class="mobile-menu__button">
             <RouterLink to="/" @click="menuToggle = false">
               <img
                 class="mobile-menu__icons"
                 src="../assets/img/header/search.svg"
                 alt="Search"
             /></RouterLink>
-          </li>
+          </li> -->
         </ul>
       </div>
-      <details class="mobile-menu__details">
-        <summary>ENG</summary>
+      <details id="language-mobile-menu" class="mobile-menu__details">
+        <summary>{{ settingsStore.langSelected }}</summary>
         <div class="mobile-menu__details-content">
-          <a class="mobile-menu__language" href="">English</a>
-          <a class="mobile-menu__language" href="">Russian</a>
+          <a class="mobile-menu__language" @click="setLanguage('eng')"
+            >English</a
+          >
+          <a class="mobile-menu__language" @click="setLanguage('rus')"
+            >Russian</a
+          >
         </div>
       </details>
     </div>

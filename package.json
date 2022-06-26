@@ -10,11 +10,16 @@
     "stubapi": "json-server db.json"
   },
   "dependencies": {
+    "@egjs/vue-flicking": "^4.8.1",
+    "@kyvg/vue3-notification": "^2.3.4",
     "axios": "^0.27.2",
     "pinia": "^2.0.13",
     "rellax": "^1.12.1",
+    "swiper": "^8.2.2",
     "vue": "^3.2.36",
     "vue-3-breadcrumbs": "^2.0.0",
+    "vue-agile": "^2.0.0",
+    "vue-awesome-swiper": "^5.0.1",
     "vue-axios": "^3.4.1",
     "vue-carousel": "^0.18.0",
     "vue-easy-lightbox": "^1.4.1",
@@ -23,7 +28,7 @@
     "vue-rellax": "^0.2.0",
     "vue-router": "^4.0.14",
     "vue-slick-carousel": "^1.0.6",
-    "vue3-carousel": "^0.1.40"
+    "vue3-carousel": "^0.1.38"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.0",
