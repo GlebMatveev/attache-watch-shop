@@ -1,0 +1,324 @@
+{
+    "header": [
+        {
+            "menu": {
+                "watch": "WATCH",
+                "shops": "WHERE TO BUY",
+                "service": "WARRANTY",
+                "brand": "ABOUT US",
+                "history": "HISTORY"
+            }
+        }
+    ],
+    "footer": [
+        {
+            "menu": {
+                "news": "NEWS",
+                "vacancies": "VACANCIES",
+                "shops": "SHOPS IN RUSSIA AND WORLD",
+                "distributers": "DISTRIBUTOR - BECOME AN OFFICIAL PARTNER",
+                "service": "GUARANTEE AND SERVICE",
+                "delivery": "PAYMENT AND DELIVERY",
+                "contacts": "CONTACTS",
+                "copyright": "ATTACHE - ALL INTELLECTUAL PROPERTY RIGHTS RESERVED"
+            }
+        },
+        {
+            "social": {
+                "socialIcon1": "../assets/img/social/instagram.png",
+                "socialLink1": "https://instagram.com/attache_watches",
+                "socialAlt1": "Instagram"
+            }
+        }
+    ],
+    "breadcrumbs": [
+        {
+            "page": {
+                "home": "HOME >"
+            }
+        }
+    ],
+    "home": [
+        {
+            "banner": {
+                "button": "VIEW THIS WATCH"
+            }
+        },
+        {
+            "showcase": {
+                "title": "CLOCK",
+                "button": "VIEW ALL CLOCK"
+            }
+        },
+        {
+            "parallax": {
+                "title": "DEEP SEA",
+                "subtitle": "COLLECTION",
+                "button": "MORE DETAILS"
+            }
+        },
+        {
+            "options": {
+                "title1": "BUY A WATCH",
+                "subtitle1": "ON SITE NOW",
+                "button1": "VIS STORE",
+                "title2": "WHERE TO BUY",
+                "subtitle2": "FIND YOUR NEAREST STORE",
+                "button2": "FIND A STORE",
+                "title3": "DISTRIBUTOR",
+                "subtitle3": "BECOME AN OFFICIAL PARTNER",
+                "button3": "OUR CONTACTS"
+            }
+        },
+        {
+            "service": {
+                "title": "GUARANTEE AND SERVICE",
+                "subtitle1": "LEARN MORE ABOUT WARRANTY AND POST-WARRANTY SERVICE,",
+                "subtitle2": "LEARN ABOUT SERVICE POINTS",
+                "button": "LEARN MORE",
+                "email": "SERVICE@ATTACHE.RU",
+                "phone": "+7(495) 640-25-02"
+            }
+        },
+        {
+            "news": {
+                "title": "NEWS",
+                "button": "LEARN MORE",
+                "socialIcon": "../assets/img/social/instagram-news.svg",
+                "socialLink": "https://instagram.com/attache_watches",
+                "socialAlt": "Instagram"
+            }
+        }
+    ],
+    "catalog": [
+        {
+            "page": {
+                "title": "COLLECTION",
+                "button": "VIEW FULL COLLECTION",
+                "declension": ["model", "models", "models"]
+            }
+        }
+    ],
+    "collection": [
+        {
+            "page": {
+                "declension": ["model", "models", "models"],
+                "button": "VIEW ALL CLOCK"
+            }
+        }
+    ],
+    "shops": [
+        {
+            "page": {
+                "title": "WHERE TO BUY",
+                "subtitle": "FIND A WATCH SHOP NEAR YOU",
+                "tableCol1": "CITY",
+                "tableCol2": "SHOP",
+                "tableCol3": "ADDRESS",
+                "tableCol4": "PHONE",
+                "tableCol5": "HOURS"
+            }
+        }
+    ],
+    "service": [
+        {
+            "page": {
+                "title": "GUARANTEE AND SERVICE",
+                "subtitle": "FULL SERVICE WARRANTY",
+                "titleAdd": "ATTACHE WATCH WARRANTY",
+                "descriptionAdd": "ALL WATCHES, ATTACHE, MECHANICAL AND QUARTZ, AND OTHER MODELS OF OUR MANUFACTURE ARE PROVIDED WITH A 12 MONTH WARRANTY. THE COUNTING OF THIS PERIOD IS CONSIDERED FROM THE DATE OF PURCHASE OF THE GOODS.",
+                "termTitle": "TERMS OF REPAIR",
+                "term1": "IN THE EVENT OF DETECTING A MARRIAGE, YOU SHOULD APPLY BY THE PHONES OR E-MAIL SPECIFIED IN THE PRODUCT PASSPORT",
+                "term2": "WARRANTY REPAIR IS THE PERFORMANCE OF WORK TO REPAIR DAMAGE AND FAULTS AND REPLACE FAILING PARTS",
+                "term3": "REPAIR IS DONE WITHIN 14 DAYS - EXCEPT WHEN ORDERING SPARE PARTS IS NECESSARY",
+                "warrantlyTitle": "WHAT IS NOT COVERED BY WARRANTY",
+                "warrantly1": "DAMAGE AND FAULTS CAUSED BY VIOLATION OF OPERATION RULES",
+                "warrantly2": "THE PRESENCE OF INDEPENDENT OPENING AND REPAIR",
+                "warrantly3": "DAMAGE DUE TO THE ELEMENTS, HIGH TEMPERATURES, STATIC ELECTRICITY",
+                "serviceTitle": "CONTACT SERVICE",
+                "serviceEmail": "SERVICE@ATTACHE.COM"
+            }
+        }
+    ],
+    "distributers": [
+        {
+            "page": {
+                "title": "DISTRIBUTOR",
+                "subtitle": "BECOME AN OFFICIAL PARTNER",
+                "titleAdd": "OUR DISTRIBUTORS",
+                "subtitleAdd": "BECOME AN OFFICIAL PARTNER",
+                "partnerEmail": "PARTNER@ATTACHE.COM"
+            }
+        }
+    ],
+    "cart": [
+        {
+            "page": {
+                "title": "BASKET",
+                "tableCol1": "MODEL",
+                "tableCol2": "NAME / PRICE / QUANTITY",
+                "tableCol3": "ORDER BASKET",
+                "tableCount": "NUMBER",
+                "orderSubtitle1": "PRESENT ORDER SUMMARY",
+                "orderSubtitle2": "TOTAL ORDER COST",
+                "orderButton": "MAKE ORDER",
+                "tableButton1": "ADD MORE CLOCK",
+                "tableButton2": "BUY ADDITIONAL BRACELETS OR OTHER ACCESSORIES"
+            }
+        }
+    ],
+    "profile": [
+        {
+            "page": {
+                "title": "PROFILE",
+                "subtitle": "ORDER INFORMATION",
+                "tableOrder": "ORDER",
+                "tableCreated": "CREATED",
+                "tableAddress": "ADDRESS",
+                "tableComment": "COMMENT"
+            }
+        }
+    ],
+    "detail": [
+        {
+            "page": {
+                "cartButton": "BUY THIS WATCH",
+                "addToCartMessage": "ITEM ADDED TO CART!",
+                "socialIconBg": "../assets/img/social/instagram-big.png",
+                "socialIconBgAlt": "Instagram",
+                "socialText": "follow us on",
+                "socialTextAdd": "INSTAGRAM",
+                "socialLink": "https://instagram.com/attache_watches",
+                "socialIconSm": "../assets/img/social/instagram.png",
+                "socialIconSmAlt": "Instagram",
+                "onlineTitle": "ONLINE PURCHASING HELP",
+                "onlineSubitle": "Write or call us and our managers will help you:",
+                "email": "ON-LINESHOP@ATTACHE.RU",
+                "phone": "+7(495) 640-25-02",
+                "titleWatch": "CHOOSE YOUR",
+                "button": "VIEW ALL WATCHES"
+            }
+        }
+    ],
+    "news": [
+        {
+            "page": {
+                "title": "NEWS",
+                "button": "VIEW",
+                "blockTitle": "ATTACHE",
+                "blockSubtitle": "MORE NEWS",
+                "blockButton": "VIEW",
+                "blockLink": "https://instagram.com/attache_watches",
+                "socialTitle": "FOLLOW US NEWS ON SOCIAL NETWORKS",
+                "socialLink1": "https://instagram.com/attache_watches",
+                "socialImg1": "../assets/img/social/news-instagram-red.svg",
+                "socialSubtitle1": "FOLLOW US ON INSTAGRAM",
+                "socialLink2": "https://instagram.com/attache_watches",
+                "socialImg2": "../assets/img/social/news-facebook-red.svg",
+                "socialSubtitle2": "FOLLOW US ON FACEBOOK",
+                "socialLink3": "https://instagram.com/attache_watches",
+                "socialImg3": "../assets/img/social/news-youtube-red.svg",
+                "socialSubtitle3": "FOLLOW US ON YOUTUBE"
+            }
+        }
+    ],
+    "news-detail": [
+        {
+            "page": {
+                "button": "ALL NEWS"
+            }
+        }
+    ],
+    "brand": [
+        {
+            "page": {
+                "title": "ATTACHE",
+                "subtitle": "HISTORY OF THE RENAISSANCE",
+                "description": "SINCE 2002 \"VOSTOK TIME\" WATCH COMPANY HAS BEEN DEVELOPING, SUPPORTING AND MANUFACTURING SPECIAL AND INDIVIDUAL WATCH PROJECTS.",
+                "text": "SINCE 2016, OUR PROFESSIONAL INTERNATIONAL TEAM FROM RUSSIA, UKRAINE, GERMANY HAS BEEN WORKING ON THE REVIVAL OF THE ATTACHE CLOCK BRAND, THE STORY OF WHICH HAS BROKEN OFF IN 1996. FOR THIS TIME WE REBRANDED THE LOGO, DEVELOPED A MODEL RANGE AND RELEASED NEW WATCHES UNDER THE BRAND UNDER THE BRAND ATTACHE IN OUR NEW MODELS YOU WILL SEE NOT ONLY THE HISTORY OF THE WATCH FACTORY \"VOSTOK\", BUT ALSO NEW IDEAS OF OUR DESIGNERS AND ENGINEERS.",
+                "year1": "2017",
+                "title1": "PILOT",
+                "description1": "IN 2017, THE FIRST COLLECTION OF PILOT WATCHES, IN RETRO STYLE, WAS RELEASED. THE WATCH HAS BEEN INSTALLED WITH A MODIFIED PRECISION MOVEMENT \"VOSTOK 2431\", AND \"VOSTOK 2415\" WITH AUTO-WINDING FUNCTION.",
+                "year2": "2018",
+                "title2": "KIROVSKIE",
+                "description2": "IN 2018 THE SECOND COLLECTION IN THE RETRO STYLE NAMED \"KIROVSKIE\" WAS RELEASED. THE WATCH WAS INSTALLED WITH A PRECISION MOVEMENT \"MOLNIJA 3602\" WITH MANUAL WINDING.",
+                "year3": "2020",
+                "title3": "PILOT AUTOMATIC",
+                "description3": "IN 2020 THE NEW PILOT COLLECTION IS RELEASED WITH SEIKO AND VOSTOK SELF-WINDING MOVEMENTS.",
+                "year4": "2021",
+                "title4": "PILOT CHRONOGRAPH",
+                "description4": "IN 2021, THE \"PILOT\" COLLECTION WAS ADDED TO THE VERSION OF THE WATCH WITH THE SEIKO VK MOVEMENT PREMIUM CHRONOGRAPH.",
+                "year5": "2022",
+                "title5": "DEEP SEA AUTOMATIC",
+                "description5": "IN APRIL 2022 THE NEW COLLECTION OF DIVING WATCHES DEEP SEE IS RELEASED, A AUTO WINDING WATCH WITH WATER RESISTANCE TO 200 METERS."
+            }
+        }
+    ],
+    "history": [
+        {
+            "page": {
+                "title": "HISTORY",
+                "subtitle": "HISTORY OF THE \"ATTACHE\" WATCH BRAND IS INSEPARABLE FROM THE HISTORY OF THE LEGENDARY CHISTOPOL WATCH FACTORY \"VOSTOK\"",
+                "description1": "THE HISTORY OF THE CHISTOPOL WATCH PRODUCTION HAS BEEN HEADING IN THE AUTUMN OF 1941. EVACUATED DURING THE WAR, \"the SECOND MOSCOW WATCH FACTORY\" ARRIVED BY THE KAZAN RAILWAY, WATER AND AIR TRANSPORT. IN 170 CARS, DELIVERED TO KAZAN AND SENT TO CHISTOPOL ON BARGES.",
+                "description2": "The first barge arrived in the city on November 10, 1941, after the cessation of navigation, the machines were delivered until February 1942, in forty -degree frosts, on horseback along the ice road across the Kama River. Together with the equipment of the Moscow Open Plant to Chistopol from Moscow, arrived 488 SPECIALISTS HEADED BY THE DIRECTOR.",
+                "description3": "IMMEDIATELY AFTER THE END OF THE WAR, THE CHISTOPOL WATCH FACTORY \"VOSTOK\" PLANT MASTERED THE PRODUCTION OF CIVIL PRODUCTS AND STARTED THE PRODUCTION OF MECHANICAL WATCHES WHICH BECAME ITS MAIN PRODUCTS FOR LONG YEARS.",
+                "description4": "IN 1952, AT THE INTERNATIONAL EXHIBITION IN MILAN, FOR THE FIRST TIME, THE CHISTOPOL WATCH GAINED WIDE RECOGNITION AND POPULARITY",
+                "description5": "IN 1962, AT THE LEIPZIG INTERNATIONAL EXHIBITION LEIPZIGER MESSE, THE VOSTOK PRECISION WATCHES WAS AWARDED WITH A BIG GOLD MEDAL.",
+                "description6": "DURING THE 70-YEAR HISTORY OF WATCH PRODUCTION, THE CHISTOPOL WATCH FACTORY \"VOSTOK\" BECAME THE LARGEST INSTRUMENT-MAKING HOLDING, AND RELEASED MANY FAMOUS WATCH BRANDS, SUCH AS \"POBEDA\", \"KAMA\",\"AMPHIBIAN\",\"COMMANDER'S\",\"VOSTOK\". HAS BEEN AWARDED MANY INTERNATIONAL AWARDS, WIN THE TRUE RECOGNITION OF WATCH FANS WORLDWIDE.",
+                "description7": "THE WERE AT THE FACTORY AND SPECIAL WATCH PROJECTS SUCH AS NVCH-30, AND \"COMPRESSOR\", A SERIES \"DESERT STORM\", MADE ON THE BASIS OF \"AMPHIBIAN WATCH\", FOR THE US DEPARTMENT OF DEFENSE .",
+                "description8": "AT THE END OF THE 1990S, THE WATCH FACTORY \"VOSTOK\" STARTED THE PILOT RELEASE OF WATCHES UNDER THE BRAND ATTACHE - THE ONLY BRAND OF THE WATCH FACTORY \"VOSTOK\", THE NAME WHICH SOUND THE SAME IN MANY LANGUAGES OF THE WORLD, AND THE LOGO WAS IMMEDIATELY DEVELOPED THIS IS THE FIRST COLLECTION THAT IS MADE WITH A GLOBAL CONSUMER IN TOUCH.",
+                "description9": "SORRY, THE TIME OF CRISES IN THE COUNTRY DID NOT ALLOW THE WATCH UNDER THIS BRAND TO BE RELEASED IN A WIDE SERIES, AS MANY DEVELOPMENTS OF THAT TIME, THE WATCH UNDER THE BRAND ATTACHE WAS RELEASED ONLY ONCE, IN 1995, LIMITED.",
+                "description10": "IN 2014 JSC CHISTOPOLSKY WATCH FACTORY TERMINATED ITS EXISTENCE AS A LEGAL ENTITY, WHEN THE PRODUCTION OF WATCH PRODUCTS WAS KEEPED TO THE FULL VOLUME."
+            }
+        }
+    ],
+    "contacts": [
+        {
+            "page": {
+                "title": "CONTACTS",
+                "subtitle": "WRITE A LETTER OR CALL ATTACHE WATCH COMPANY",
+                "placeholderName": "NAME:",
+                "placeholderFamily": "SURNAME:",
+                "placeholderEmail": "EMAIL",
+                "placeholderPhone": "PHONE",
+                "placeholderCountry": "COUNTRY/REGION",
+                "placeholderCity": "CITY",
+                "placeholderText": "ENTER TEXT:",
+                "agreement1": "By checking this box, you agree that ATTACHE may process your data in accordance with its Privacy Policy, which details how the data will be handled (including its use, transfer and storage) and what rights and you have the opportunity to regulate this work.*",
+                "agreement2": "I confirm my wish to subscribe to the newsletter.",
+                "agreement3": "I confirm that I wish to receive information about Hublot offers, events and news and agree to be contacted by Hublot or the relevant local ATTACHE (not including the ATTACHE newsletter).",
+                "button": "SEND EMAIL",
+                "contactsTitle": "ADDRESS / TELEPHONE / E-MAIL",
+                "address": "RUSSIA, CHISTOPOL, ST. ENGELS 127",
+                "phone": "+7 (84342) 5-65-25",
+                "email": "INFO@ATTACHEWATCHES.COM"
+            }
+        }
+    ],
+    "delivery": [
+        {
+            "page": {
+                "titleMain": "PAYMENT AND SHIPPING",
+                "disclaimer1": "Due to the current epidemiological situation in the world, a number of countries have stopped accepting all international postal items, including EMS items.",
+                "disclaimer2": "PRODUCTION IN CONNECTION WITH THE SELF-ISOLATION REGIME INTRODUCED IN THE TERRITORY OF THE RUSSIAN FEDERATION WORKS IN A LIMITED MODE. MANY MODELS MAY NOT BE AVAILABLE FOR ORDER. SPECIFY THE AVAILABILITY OF A CERTAIN MODEL",
+                "text1": "BY MAIL INFO@BALATONN.COM OR WHATSAPP +79063260990",
+                "text2": "ORDERS ARE ACCEPTED ONLY ON THE SITE OF THE INTERNET STORE.",
+                "warning": "WE DO NOT ACCEPT ORDERS BY PHONE!",
+                "text3": "TO PLACE AN ORDER, YOU NEED TO SELECT A PRODUCT, PUT IT INTO THE CART, FILL OUT THE ORDER FORM AND CHOOSE A METHOD OF PAYMENT CONVENIENT FOR YOU.",
+                "text4": "AFTER PAYMENT IS RECEIVED, OUR MANAGERS WILL COMPLETE AND PACK YOUR ORDER (FROM 1 TO 3 WORKING DAYS).",
+                "listTitle": "PAYMENT",
+                "listSubtitle": "WE HAVE SEVERAL PAYMENT METHODS IN OUR ONLINE STORE:",
+                "listItems": "<li class=\"payment__list-item\"> Payment by plastic card. Secure payments with Mastercard, Visa, World.</li> <li class=\"payment__list-item\"> Electronic payments. Yandex money, Webmoney, Qiwi.</li> <li class=\"payment__list-item\"> Bank transfer. Payment at any bank branch. We will send a form with our payment details by e-mail within 3 working days </li> <li class=\"payment__list-item\"> Cash on delivery. <span class=\"payment__text\">Payment on delivery at the office of TC SDEK (+4% for transferring money to the store account) or at the Russian Post office (+3% per translation).</span> </li>",
+                "cardTitle": "PAYING BY BANK CARD",
+                "cardText": "Payment for the order is made using Visa, Visa Electron, MasterCard, Maestro bank cards of the international payment systems Visa International, MasterCard International, MIR. Payment by bank card is made through the processing centers of Uniteller, Yandex Kassa, MaxKassa. For payment, you will be redirected to the secure payment page of Uniteller, Yandex Kassa, MaxKassa, where you will need to enter your card details to pay for the order.After successful payment, an electronic receipt with the necessary information about the order and payment method will be sent to the email address you specified.",
+                "securityTitle": "SECURITY GUARANTEES:",
+                "securityText": "The security of Uniteller's processing is confirmed by the PCI DSS data security standard certificate. The reliability of the service is ensured by an intelligent system for monitoring fraudulent transactions, using 3D Secure, a modern technology for ensuring the security of Internet payments. Your card details are entered on a special secure payment page. The transfer of information to the Uniteller processing center takes place using TLS encryption technology.Further transfer of information is carried out through closed banking channels with the highest level of reliability.Uniteller does not transfer your card details to the store and other third parties.If your card supports 3D Secure technology, to make a payment , You will need to pass additional user verification at the issuing bank (the bank that issued this card. To do this, you will be redirected to the page of the bank that issued your card. The type of verification depends on the bank - to as a rule, this is an additional password that is sent to you via SMS, variable code card, or other means. If you have any questions about a completed payment, you can contact the technical support service of the Uniteller processing center: support@uniteller.ru or call 8 800 100 19 60.",
+                "paymentTitle": "YOU CAN PAY IN ANY WAY CONVENIENT FOR YOU:",
+                "paymentSubtitle1": "DETAILS",
+                "paymentText1": "Postal address: <br /> Chistopol 422986 103-37 Engels St.<br /> IE Chapalov Dmitry Vyacheslavovich<br /> email : info@balatonn.com<br /> Phone : +7 906 326 09 90<br /> OGRNIP 317169000176351 Cor. account: 30101810600000000603<br /> Rs. account: 40802810162000019629<br />",
+                "paymentSubtitle2": "SHIPPING",
+                "paymentText2": "Delivery to all cities of Russia is carried out<br /> via TC SDEK or Russian Post, 1st class package.<br /> You can check the delivery time to your city on the website of CDEK and Russian Post,<br /> delivery is carried out from the city of Chistopol, the Republic of Tatarstan.<br /><br />Order delivery outside of Russia is carried out by the EMS service.<br /><br />After 100% payment is made, your goods are sent.<br />Next, a letter will be sent to your email box, which indicates the <br />package number, which will help track the progress of the purchase online."
+            }
+        }
+    ]
+}

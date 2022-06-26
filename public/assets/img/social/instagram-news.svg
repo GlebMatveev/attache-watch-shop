@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   width="33.330509mm"
+   height="33.330521mm"
+   viewBox="0 0 33.330509 33.330521"
+   version="1.1"
+   id="svg1146"
+   inkscape:version="1.1.2 (b8e25be833, 2022-02-05)"
+   sodipodi:docname="instagram-news.svg"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:svg="http://www.w3.org/2000/svg">
+  <sodipodi:namedview
+     id="namedview1148"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageshadow="2"
+     inkscape:pageopacity="0.0"
+     inkscape:pagecheckerboard="0"
+     inkscape:document-units="mm"
+     showgrid="false"
+     inkscape:zoom="1.0796969"
+     inkscape:cx="1.3892788"
+     inkscape:cy="207.46563"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     inkscape:window-x="-8"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="layer3" />
+  <defs
+     id="defs1143" />
+  <g
+     inkscape:groupmode="layer"
+     id="layer3"
+     inkscape:label="Слой 2"
+     transform="translate(-100.81818,-36.045479)" />
+  <g
+     inkscape:label="Слой 1"
+     inkscape:groupmode="layer"
+     id="layer1"
+     transform="translate(-100.81818,-36.045479)">
+    <path
+       d="m 110.61848,36.045479 c -5.37951,0 -9.8003,4.414874 -9.8003,9.800308 v 13.729899 c 0,5.379516 4.41488,9.800313 9.8003,9.800313 h 13.72991 c 5.37951,0 9.8003,-4.414878 9.8003,-9.800313 V 45.845787 c 0,-5.379516 -4.41488,-9.800308 -9.8003,-9.800308 z m 0,3.030048 h 13.72991 c 3.74612,0 6.77025,3.024128 6.77025,6.77026 v 13.729899 c 0,3.746131 -3.02413,6.77026 -6.77025,6.77026 h -13.72991 c -3.74612,0 -6.77026,-3.024129 -6.77026,-6.77026 V 45.845787 c 0,-3.746132 3.02414,-6.77026 6.77026,-6.77026 z m 15.81305,3.314113 c -0.76342,0 -1.37298,0.609561 -1.37298,1.37299 0,0.76343 0.60956,1.37299 1.37298,1.37299 0.76343,0 1.373,-0.60956 1.373,-1.37299 0,-0.763429 -0.60957,-1.37299 -1.373,-1.37299 z m -8.94811,1.230957 c -5.00074,0 -9.09013,4.089379 -9.09013,9.090139 0,5.000761 4.08939,9.09014 9.09013,9.09014 5.00077,0 9.09015,-4.089379 9.09015,-9.09014 0,-5.00076 -4.08938,-9.090139 -9.09015,-9.090139 z m 0,3.030046 c 3.36738,0 6.06011,2.692717 6.06011,6.060093 0,3.367375 -2.69273,6.060094 -6.06011,6.060094 -3.36737,0 -6.06008,-2.692719 -6.06008,-6.060094 0,-3.367376 2.69271,-6.060093 6.06008,-6.060093 z"
+       id="path2-1"
+       style="fill:#ffffff;stroke-width:1.51502" />
+  </g>
+</svg>
